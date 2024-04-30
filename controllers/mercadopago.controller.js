@@ -6,10 +6,10 @@ mercadopago.configure({
 });
 
  const createOrderMERCADOPAGO = async (req, res) => {
- 
-
   try { 
     const { user, name, category, price, quantity } = req.body;
+    console.log('ENTRO ' + user + ' ' + name + ' ' + category + ' '+price+' '+quantity)
+
     const result = await mercadopago.preferences.create({
         items: [
             {
