@@ -2,22 +2,31 @@ import mercadopago from 'mercadopago';
 require('dotenv').config();
 
 
-export const createOrderMPAGO = async (req, res) => {
-  const { description, title, unit_price, currency_id, quantity } = req.body;
+export const createOrderMERCADOPAGO = async (req, res) => {
+  const { user, name, category, price, quantity } = req.body;
 
   mercadopago.configure({
       access_token: `${process.env.MPAGO_TOKEN}`
   });
 
+  /*
+      PRODUCTO
+      name,
+      price,
+      category,
+      description,
+      user: req.user._id,
+  */
+
   try {
       const result = await mercadopago.preferences.create({
           items: [
               {
-                //  id,
-                  description,
-                  title,
-                  unit_price,
-                  currency_id,
+                  id: user,
+                  description: category ,
+                  title: name,
+                  unit_price:price,
+                 // currency_id,
                   quantity,
               },
           ]
