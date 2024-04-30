@@ -5,7 +5,7 @@ mercadopago.configure({
   access_token: `${process.env.MPAGO_TOKEN}`
 });
 
-export const createOrderMERCADOPAGO = async (req, res) => {
+ const createOrderMERCADOPAGO = async (req, res) => {
   const { user, name, category, price, quantity } = req.body;
 
   try {
@@ -26,4 +26,7 @@ export const createOrderMERCADOPAGO = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Something goes wrong" });
   }
+};
+module.exports = {
+  createOrderMERCADOPAGO
 };
