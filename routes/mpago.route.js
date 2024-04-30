@@ -1,8 +1,8 @@
 const { Router } = require('express');
-const { mercadopago : controller } = require('../controllers');
+const { createOrderMERCADOPAGO } = require('../controllers/mercadopago.controller');
 
 const router = Router();
 
 router.post('/',
-controller.createOrderMERCADOPAGO,
+createOrderMERCADOPAGO,
 );
