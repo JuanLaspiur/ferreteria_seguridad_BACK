@@ -16,6 +16,7 @@ export const createOrderMERCADOPAGO = async (req, res) => {
                 description: category ,
                 title: name,
                 unit_price:price,
+                currency_id: "CLP",
                 quantity,
             },
         ]
