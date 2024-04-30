@@ -11,6 +11,7 @@ const offerRoute = require('./offer.route');
 const orderRoute = require('./order.route');
 const chatRoute = require('./chat.route');
 const messageRoute = require('./message.route');
+const mpago = require('./mpago.route');
 
 route.use('/auth', authRoute);
 route.use('/users', userRoute);
@@ -23,5 +24,6 @@ route.use('/offers', offerRoute);
 route.use('/orders', orderRoute);
 route.use('/chats', chatRoute);
 route.use('/messages', messageRoute);
+route.use('/mpago', mpago);
 
 module.exports = route;
