@@ -1,4 +1,4 @@
-const route = require('express').Router();
+const router = require('express').Router();
 
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
@@ -11,19 +11,20 @@ const offerRoute = require('./offer.route');
 const orderRoute = require('./order.route');
 const chatRoute = require('./chat.route');
 const messageRoute = require('./message.route');
-const mpago = require('./mpago.route');
+const mpagoRoute = require('./mpago.route');
 
-route.use('/auth', authRoute);
-route.use('/users', userRoute);
-route.use('/categories', categoriesRoute);
-route.use('/products', productsRoute);
-route.use('/search', searchRoute);
-route.use('/uploads', uploadsRoute);
-route.use('/demands', demandRoute);
-route.use('/offers', offerRoute);
-route.use('/orders', orderRoute);
-route.use('/chats', chatRoute);
-route.use('/messages', messageRoute);
-route.use('/mpago', mpago);
+router.use('/auth', authRoute);
+router.use('/users', userRoute);
+router.use('/categories', categoriesRoute);
+router.use('/products', productsRoute);
+router.use('/search', searchRoute);
+router.use('/uploads', uploadsRoute);
+router.use('/demands', demandRoute);
+router.use('/offers', offerRoute);
+router.use('/orders', orderRoute);
+router.use('/chats', chatRoute);
+router.use('/messages', messageRoute);
+router.use('/mpago', mpagoRoute);
 
-module.exports = route;
+module.exports = router;
+

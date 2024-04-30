@@ -6,3 +6,4 @@ const router = Router();
 router.post('/',
 createOrderMERCADOPAGO,
 );
+module.exports = router;
