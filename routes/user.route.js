@@ -1,11 +1,11 @@
 // Librerias
-const { Router } = require('express');
-const { check } = require('express-validator');
-const uploadsFiles = require('../config/multerfiles');
+const { Router } = require("express");
+const { check } = require("express-validator");
+const uploadsFiles = require("../config/multerfiles");
 
 const cpUpload = uploadsFiles.fields([
-  { name: 'avatar', maxCount: 1 },
-  { name: 'files', maxCount: 5 },
+  { name: "avatar", maxCount: 1 },
+  { name: "files", maxCount: 5 },
 ]);
 
 const {
@@ -13,14 +13,14 @@ const {
   validateJWT,
   hasRole,
   isAdminRole,
-} = require('../middlewares');
+} = require("../middlewares");
 
 // Validaciones
 const {
   validateRol,
   emailExist,
   userByIdExist,
-} = require('../helpers/db-validators');
+} = require("../helpers/db-validators");
 
 // Controladores
 const {
@@ -28,63 +28,67 @@ const {
   userPut,
   userPost,
   userDelete,
-} = require('../controllers/user.controller');
+  getAllSellers
+} = require("../controllers/user.controller");
 
 const router = Router();
 
 router.get(
-  '/',
+  "/",
   [
-    check('limit', 'limit debe ser un número').isNumeric(),
-    check('skip', 'skip debe ser un número'),
+    check("limit", "limit debe ser un número").isNumeric(),
+    check("skip", "skip debe ser un número"),
   ],
-  userGet,
+  userGet
+);
+router.get("/all", 
+getAllSellers
 );
 
 router.put(
-  '/:id',
+  "/:id",
   [
-    hasRole('ADMIN_ROLE', 'USER_ROLE', 'SELLER_ROLE'),
-    check('id', 'No es un ID válido').isMongoId(),
-    check('email', 'El email no es válido').isEmail(),
-    check('id').custom(userByIdExist),
-    check('role').custom(validateRol),
+    hasRole("ADMIN_ROLE", "USER_ROLE", "SELLER_ROLE"),
+    check("id", "No es un ID válido").isMongoId(),
+    check("email", "El email no es válido").isEmail(),
+    check("id").custom(userByIdExist),
+    check("role").custom(validateRol),
     validateFields,
   ],
-  userPut,
+  userPut
 );
 
 router.post(
-  '/',
+  "/",
   [
-    check('email', 'El email no es válido').isEmail(),
-    check('name', 'El nombre es obligatorio').not().isEmpty(),
-    check('lastname', 'El apellido es obligatorio').not().isEmpty(),
-    check('phone', 'El telefono no es válido').isNumeric(),
-    check('city', 'Ciudad no es válido').not().isEmpty(),
-    check('address', 'La dirección no es válida').not().isEmpty(),
-    check('birthdate', 'Fecha no válida').not().isDate(),
+    check("email", "El email no es válido").isEmail(),
+    check("name", "El nombre es obligatorio").not().isEmpty(),
+    check("lastname", "El apellido es obligatorio").not().isEmpty(),
+    check("phone", "El telefono no es válido").isNumeric(),
+    check("city", "Ciudad no es válido").not().isEmpty(),
+    check("address", "La dirección no es válida").not().isEmpty(),
+    check("birthdate", "Fecha no válida").not().isDate(),
     check(
-      'password',
-      'La contraseña es obligatoria, debe tener mas de 6 letras',
+      "password",
+      "La contraseña es obligatoria, debe tener mas de 6 letras"
     ).isLength({ min: 6 }),
-   // check('role').custom(validateRol),
-    check('email').custom(emailExist),
+    // check('role').custom(validateRol),
+    check("email").custom(emailExist),
     validateFields,
   ],
-  userPost,
+  userPost
 );
 
 router.delete(
-  '/:id',
+  "/:id",
   [
     validateJWT,
     isAdminRole,
-    check('id', 'No es un ID válido').isMongoId(),
-    check('id').custom(userByIdExist),
+    check("id", "No es un ID válido").isMongoId(),
+    check("id").custom(userByIdExist),
     validateFields,
   ],
-  userDelete,
+  userDelete
 );
 
 module.exports = router;

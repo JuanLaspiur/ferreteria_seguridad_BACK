@@ -98,4 +98,14 @@ module.exports = {
       return res.status(400).json({ msg: error.message });
     }
   },
+  getAllSellers: async (req = request, res = response) => {
+    try {
+      const sellers = await User.find({ role: 'SELLER_ROLE' });
+      return res.json(sellers);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: error.message });
+    }
+  }
+  
 };
