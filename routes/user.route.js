@@ -41,7 +41,7 @@ router.get(
   ],
   userGet
 );
-router.get("/all", 
+router.get("/allSellers", 
 getAllSellers
 );
 
