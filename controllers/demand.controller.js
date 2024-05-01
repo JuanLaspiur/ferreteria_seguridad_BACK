@@ -2,7 +2,7 @@ const { response } = require('express');
 const { Demand, User, Offer } = require('../models');
 
 module.exports = {
-  createDemand: async (req, res = response) => {
+  /* createDemand: async (req, res = response) => {
     const { type, location, paymentType, products } = req.body;
     try {
       locationTemp = location.replace('[', '').replace(']', '');
@@ -28,7 +28,34 @@ module.exports = {
         .status(500)
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
+  }, */
+
+   createDemand : async (req, res = response) => {
+    const { type, location, paymentType, products } = req.body;
+
+    try {
+      const data = {
+        user: req.user._id,
+        type,
+        location: {
+          type: 'Point',
+          coordinates: [parseFloat(location.coordinates[1]), parseFloat(location.coordinates[0])],
+        },
+        paymentType,
+        products,
+      };
+  
+      const demand = new Demand(data);
+      await demand.save();
+  
+      return res.status(201).json(demand);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
+    }
   },
+  
+
   getDemands: async (req, res = response) => {
     const { limit = 5, skip = 0, lat, lng, radio } = req.query;
     radiotemp = radio ? radio / 6378.1 : 0.1 / 6378.1;

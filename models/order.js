@@ -35,6 +35,11 @@ const OderSchema = Schema(
       type: Boolean,
       default: false,
     },
+    // MercadoPago
+    mercado_pago: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,

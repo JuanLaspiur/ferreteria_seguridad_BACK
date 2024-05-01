@@ -130,4 +130,23 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
+   getOffersByDemandId : async (req, res = response) => {
+    const { demandId } = req.params;
+  
+    try {
+      const offers = await Offer.find({ demand: demandId })
+        .populate('order')
+        .populate('seller', ['name', 'avatar']);
+  
+      if (!offers || offers.length === 0) {
+        return res.status(404).json({ msg: 'No se encontraron ofertas para esta demanda' });
+      }
+  
+      return res.json({ offers });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
+    }
+  }
+  
 };

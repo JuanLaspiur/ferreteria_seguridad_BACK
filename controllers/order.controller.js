@@ -3,7 +3,7 @@ const { Order, Chat, Offer } = require('../models');
 
 module.exports = {
   createOrder: async (req, res = response) => {
-    const { offer } = req.body;
+    const { offer, mercado_pago } = req.body;
 
     const orderfound = await Order.findOne({ offer, buyer: req.user._id });
     if (orderfound) {
@@ -24,6 +24,7 @@ module.exports = {
       delivery: offerFound.delivery,
       total: offerFound.total,
       seller: offerFound.seller,
+      mercado_pago
     };
 
     const order = new Order(data);
