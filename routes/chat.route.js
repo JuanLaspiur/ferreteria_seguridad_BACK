@@ -12,6 +12,8 @@ const router = Router();
 router.get('/', validateJWT, controller.getChats);
 
 router.get('/:id', validateJWT, controller.getChat);
+// MAL HECHO JUAN
+router.get('/malHECHO/:id', controller.getChat);
 
 // router.post(
 //   '/',
