@@ -33,7 +33,7 @@ module.exports = {
     const message = new Message(data);
     await message.save();
     chatFound.messages.push(message);
-    // await chatFound.save();
+    await chatFound.save();
 
     return res.status(201).json(message);
   },
