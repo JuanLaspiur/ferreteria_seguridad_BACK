@@ -1,8 +1,6 @@
 const { response } = require('express');
 const { Chat, Message } = require('../models');
-const { sendRealTimeMessage } = require('../sockets/realtimeMessaging');
 
-// HECHO POR JUAN, MEJORAR
 module.exports = {
   createChat: async (req, res = response) => {
     const { buyer, seller, order } = req.body;
@@ -13,14 +11,10 @@ module.exports = {
       order,
     };
 
-    try {
-      const chat = new Chat(data);
-      await chat.save();
-      return res.status(201).json(chat);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ msg: 'Internal server error' });
-    }
+    const chat = new Chat(data);
+    await chat.save();
+
+    return res.status(201).json(chat);
   },
   getChats: async (req, res = response) => {
     const { limit = 5, skip = 0 } = req.query;
@@ -97,27 +91,6 @@ module.exports = {
       return res
         .status(500)
         .json({ msg: `A ocurrido un error: ${error.message}` });
-    }
-  },
-  createMessage: async (req, res = response) => {
-    const { chatId, text } = req.body;
-
-    const data = {
-      chat: chatId,
-      text,
-      sender: req.user._id,
-    };
-
-    try {
-      const message = new Message(data);
-      await message.save();
-
-      await sendRealTimeMessage(chatId, message);
-
-      return res.status(201).json(message);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ msg: 'Internal server error' });
     }
   },
 };
