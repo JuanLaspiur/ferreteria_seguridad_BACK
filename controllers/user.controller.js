@@ -106,6 +106,21 @@ module.exports = {
       console.log(error);
       return res.status(500).json({ msg: error.message });
     }
-  }
+  },
+  getUserById: async (req = request, res = response) => {
+    const { id } = req.params;
+  
+    try {
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+      return res.json(user);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+  
   
 };

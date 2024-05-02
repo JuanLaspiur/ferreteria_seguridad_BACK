@@ -28,7 +28,8 @@ const {
   userPut,
   userPost,
   userDelete,
-  getAllSellers
+  getAllSellers,
+  getUserById,
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -41,9 +42,10 @@ router.get(
   ],
   userGet
 );
-router.get("/allSellers", 
-getAllSellers
-);
+
+router.get("/userId/:id", getUserById);
+
+router.get("/allSellers", getAllSellers);
 
 router.put(
   "/:id",
