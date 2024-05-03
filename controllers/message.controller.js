@@ -4,7 +4,7 @@ const { handleUpload } = require('../config/cloudinary');
 
 module.exports = {
   createMessage: async (req, res = response) => {
-    const { chat, text } = req.body;
+    const { chat, text, sender } = req.body;
     let docs = null;
     const chatFound = await Chat.findById(chat);
     if (!chatFound) {
@@ -26,7 +26,7 @@ module.exports = {
     const data = {
       chat,
       text,
-      sender: req.user.uid,
+      sender,
       docs,
     };
 
