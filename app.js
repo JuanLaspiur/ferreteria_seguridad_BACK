@@ -49,15 +49,15 @@ io.on('connection', (socket) => {
   socket.on('new message', async (newMessageRecieved) => {
     //console.log(newMessageRecieved);
     var chatId = newMessageRecieved.chat;
-    // var sender = newMessageRecieved.sender;
-    // const chat = await Chat.findById(chatId);
+     var sender = newMessageRecieved.sender;
+     const chat = await Chat.findById(chatId);
     //console.log(chat);
 
-    // if (sender == chat.seller) {
-    //   socket.in(chat.buyer).emit('message recieved', newMessageRecieved);
-    // } else {
-    //   socket.in(chat.seller).emit('message recieved', newMessageRecieved);
-    // }
+     if (sender == chat.seller) {
+       socket.in(chat.buyer).emit('message recieved', newMessageRecieved);
+     } else {
+       socket.in(chat.seller).emit('message recieved', newMessageRecieved);
+     }
     socket.to(chatId).emit('message recieved', newMessageRecieved);
   });
   socket.on('new demand', async (newDemandRecieved) => {
