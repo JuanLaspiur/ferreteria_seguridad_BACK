@@ -37,6 +37,9 @@ io.on('connection', (socket) => {
 console.log('Conectado juancito ')
   socket.on('message', (data) => {
     console.log('Mensaje recivido  ' + data);
-    socket.emit('message',data)
+    socket.emit('message',{
+      data,
+      from: socket.id.slice(6)
+    })
   })
 });
