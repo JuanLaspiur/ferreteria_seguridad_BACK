@@ -26,7 +26,7 @@ module.exports = {
     const data = {
       chat,
       text,
-      sender: req.user._id,
+      sender: req.user.uid,
       docs,
     };
 
