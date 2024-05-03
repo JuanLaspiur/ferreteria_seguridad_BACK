@@ -33,9 +33,9 @@ const io = new Server(servidor, {
 });
 
 io.on('connection', (socket) => {
-  //console.log('Connected to socket.io');
+  console.log('Connected to socket.io');
   socket.on('setup', (userData) => {
-    //console.log(userData);
+  console.log(userData);
     socket.join(userData.uid);
     socket.emit('connected');
   });
