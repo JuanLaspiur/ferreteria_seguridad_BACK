@@ -17,7 +17,7 @@ router.post(
   '/',
   uploads.single('files', 8),
   [
-    validateJWT,
+    // validateJWT,
     check('chat', 'El chat es obligatorio').not().isEmpty(),
     check('text', 'El mensaje es obligatorio').not().isEmpty(),
     validateFields,
