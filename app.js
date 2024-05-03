@@ -35,4 +35,7 @@ const io = new Server(servidor, {
 
 io.on('connection', (socket) => {
 console.log('Conectado juancito ')
+  socket.on('message', (data) => {
+    console.log('Mensaje recivido  ' + data);
+  })
 });
