@@ -79,7 +79,7 @@ module.exports = {
         $or: [{ seller: userId }, { buyer: userId }],
       });
 
-      return res.json({ total, chats });
+      return res.json({ data });
     } catch (error) {
       console.log(error);
       return res
