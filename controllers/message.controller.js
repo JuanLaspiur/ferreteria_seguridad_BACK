@@ -120,4 +120,25 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
+  getChatMessages: async (req, res = response) => {
+    const { chatId } = req.params;
+
+    try {
+      const chat = await Chat.findById(chatId).populate({
+        path: 'messages',
+        options: {
+          sort: { createdAt: -1 } 
+        }
+      });
+
+      if (!chat) {
+        return res.status(404).json({ msg: 'No existe el chat' });
+      }
+
+      return res.json(chat.messages);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ msg: 'Error al obtener los mensajes del chat' });
+    }
+  }
 };

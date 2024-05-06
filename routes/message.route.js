@@ -13,6 +13,8 @@ router.get('/', validateJWT, controller.getMessages);
 
 router.get('/:id', validateJWT, controller.getMessage);
 
+router.get('/:chatId', controller.getChatMessages);
+
 router.post(
   '/',
   uploads.single('files', 8),
