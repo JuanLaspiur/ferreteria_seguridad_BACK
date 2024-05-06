@@ -13,7 +13,7 @@ router.get('/', validateJWT, controller.getMessages);
 
 router.get('/:id', validateJWT, controller.getMessage);
 
-router.get('/:chatId', controller.getChatMessages);
+router.get('/chatId/:chatId', controller.getChatMessages);
 
 router.post(
   '/',
