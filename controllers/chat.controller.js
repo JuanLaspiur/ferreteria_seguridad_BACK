@@ -64,6 +64,29 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
+  getChatsByUserId: async (req, res = response) => {
+    const { userId } = req.params;
+    try {
+      const chats = await Chat.find({
+        $or: [{ seller: userId }, { buyer: userId }],
+      })
+        .populate('order')
+        .populate('seller', ['name', 'avatar'])
+        .populate('buyer', ['name', 'avatar'])
+        .sort({ createdAt: -1 });
+
+      const total = await Chat.countDocuments({
+        $or: [{ seller: userId }, { buyer: userId }],
+      });
+
+      return res.json({ total, chats });
+    } catch (error) {
+      console.log(error);
+      return res
+        .status(500)
+        .json({ msg: `A ocurrido un error: ${error.message}` });
+    }
+  },
   updateChat: async (req, res = response) => {
     const { id } = req.params;
 

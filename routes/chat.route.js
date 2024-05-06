@@ -15,6 +15,8 @@ router.get('/:id', validateJWT, controller.getChat);
 // MAL HECHO JUAN
 router.get('/malHECHO/:id', controller.getChat);
 
+router.get('/chats/:userId', controller.getChatsByUserId);
+
 // router.post(
 //   '/',
 //   [
