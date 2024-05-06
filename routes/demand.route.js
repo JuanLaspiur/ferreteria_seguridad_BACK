@@ -39,7 +39,7 @@ router.post(
     check('paymentType', 'El tipo de pago es obligatorio es obligatoria')
       .not()
       .isEmpty(),
-    validateFields,
+   // validateFields,
     hasRole('USER_ROLE'),
   ],
   controller.createDemand,
