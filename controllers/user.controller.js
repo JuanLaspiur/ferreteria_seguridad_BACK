@@ -48,7 +48,27 @@ module.exports = {
     });
 
     return res.json({ msg: 'success', user });
-  },  
+  },
+  userUpdate: async (req = request, res = response) => {
+    const { id } = req.params;
+    const updateFields = req.body;
+  
+    try {
+      const user = await User.findByIdAndUpdate(id, updateFields, {
+        new: true,
+      });
+  
+      if (!user) {
+        return res.status(404).json({ msg: "User not found" });
+      }
+  
+      return res.json({ msg: 'success', user });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: error.message });
+    }
+  },
+  
   userPost: async (req = request, res = response) => {
     console.log('Entre a crear un usuario en post')
     try {
