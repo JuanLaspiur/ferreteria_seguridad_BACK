@@ -130,6 +130,24 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
+  updateOrderStatus: async (req, res = response) => { 
+    try {
+      const { id } = req.params;
+      const { status } = req.body;  
+      const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
+      if (!order) {
+        return res.status(400).json({ msg: 'La orden no existe' });
+      }
+  
+      // Devuelve la orden actualizada como respuesta
+      return res.json(order);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
+    }
+  }
+  
+  ,
   deleteOrder: async (req, res = response) => {
     const { id } = req.params;
     try {

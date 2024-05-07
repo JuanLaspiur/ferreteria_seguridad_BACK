@@ -20,12 +20,12 @@ router.get('/:id', validateJWT, controller.getOrder);
 
 router.post(
   '/',
-  [
+/*  [
     validateJWT,
     check('offer', 'La oferta es obligatorio').not().isEmpty(),
     validateFields,
-    hasRole('USER_ROLE'),
-  ],
+    hasRole('SELLER_ROLE'), // por que dice User_role? lo modifiqué a seller_role
+  ], */
 
   controller.createOrder,
 );
@@ -42,7 +42,18 @@ router.put(
   ],
   controller.updateOrder,
 );
-
+router.put(
+  '/orderState/:id',
+ /* [
+    validateJWT,
+    //check('name').not().isEmpty(),
+    check('id').isMongoId(),
+    check('id').custom(orderExist),
+    validateFields,
+    hasRole('USER_ROLE'),
+  ], */
+  controller.updateOrderStatus,
+);
 router.delete(
   '/:id',
   [
