@@ -31,11 +31,11 @@ module.exports = {
   }, */
 
    createDemand : async (req, res = response) => {
-    const { type, location, paymentType, products } = req.body;
+    const {userId ,type, location, paymentType, products } = req.body;
 
     try {
       const data = {
-        user: req.user.uid,
+        user: userId,
         type,
         location: {
           type: 'Point',
