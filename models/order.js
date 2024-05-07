@@ -39,6 +39,10 @@ const OderSchema = Schema(
     mercado_pago: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type:String,
+      default:'pending'
     }
   },
   {
