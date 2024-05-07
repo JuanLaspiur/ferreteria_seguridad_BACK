@@ -31,16 +31,16 @@ router.post(
   '/',
   [
    // validateJWT,
-   // check('type', 'El tipo de demanda es obligatorio')
-    //  .not()
-     // .isEmpty()
-     // .isString(),
+    check('type', 'El tipo de demanda es obligatorio')
+      .not()
+      .isEmpty()
+      .isString(),
     // check('products', 'Productos es obligatorios').not().isEmpty(),
-    //check('paymentType', 'El tipo de pago es obligatorio es obligatoria')
-      //.not()
-      //.isEmpty(),
-   // validateFields,
-  //  hasRole('USER_ROLE'),
+    check('paymentType', 'El tipo de pago es obligatorio es obligatoria')
+      .not()
+      .isEmpty(),
+    validateFields,
+   // hasRole('USER_ROLE'),
   ],
   controller.createDemand,
 );

@@ -35,7 +35,7 @@ module.exports = {
 
     try {
       const data = {
-        user: req.user.uid,
+        user: req.user._id,
         type,
         location: {
           type: 'Point',
