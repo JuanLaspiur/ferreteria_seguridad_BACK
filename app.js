@@ -72,11 +72,19 @@ io.on('connection', (socket) => {
   
       await newMessage.save();
   
-      socket.to(chat).emit('message received', newMessageRecieved);
+      await Chat.findByIdAndUpdate(chat, { $push: { messages: newMessage._id } });
+  
+      const updatedChat = await Chat.findById(chat).populate('messages');
+  
+      socket.to(chat).emit('message received', { 
+        newMessage: newMessageRecieved,
+        updatedMessages: updatedChat.messages
+      });
     } catch (error) {
       console.error('Error al crear y enviar el mensaje:', error);
     }
   });
+  
 
   socket.on('new demand', async (newDemandRecieved) => {
     const sellers = await User.find({ role: 'SELLER_ROLE' });
