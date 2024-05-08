@@ -3,8 +3,7 @@ const cors = require('cors');
 var morgan = require('morgan');
 const path = require('path');
 require('dotenv').config();
-const { Chat, Demand, User } = require('./models');
-
+const { Chat, Demand, User, Message } = require('./models');
 const port = process.env.PORT || 8080;
 const Routes = require('./routes/index');
 const { conn } = require('./db/config');
@@ -46,7 +45,7 @@ io.on('connection', (socket) => {
   socket.on('typing', (room) => socket.in(room).emit('typing'));
   socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
-  socket.on('new message', async (newMessageRecieved) => {
+ /* socket.on('new message', async (newMessageRecieved) => {
     //console.log(newMessageRecieved);
     var chatId = newMessageRecieved.chat;
      var sender = newMessageRecieved.sender;
@@ -59,7 +58,26 @@ io.on('connection', (socket) => {
        socket.in(chat.seller).emit('message recieved', newMessageRecieved);
      }
     socket.to(chatId).emit('message recieved', newMessageRecieved);
+  }); */
+
+  socket.on('new message', async (newMessageRecieved) => {
+    try {
+      const { sender, chat, text} = newMessageRecieved;
+  
+      const newMessage = new Message({
+        sender,
+        chat,
+        text,        
+      });
+  
+      await newMessage.save();
+  
+      socket.to(chat).emit('message received', newMessageRecieved);
+    } catch (error) {
+      console.error('Error al crear y enviar el mensaje:', error);
+    }
   });
+
   socket.on('new demand', async (newDemandRecieved) => {
     const sellers = await User.find({ role: 'SELLER_ROLE' });
     // sellers.forEach((user) => {
