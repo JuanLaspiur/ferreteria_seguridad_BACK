@@ -70,13 +70,24 @@ io.on('connection', (socket) => {
         text,        
       });
   
+      // Guardar el nuevo mensaje en la base de datos
       await newMessage.save();
   
-      socket.emit('message received', newMessageRecieved);
+      // Actualizar el arreglo de mensajes del chat
+      await Chat.findByIdAndUpdate(chat, { $push: { messages: newMessage._id } });
+  
+      // Obtener la lista de mensajes actualizada del chat
+      const updatedChat = await Chat.findById(chat).populate('messages');
+  
+      // Emitir un evento para indicar que se ha recibido un nuevo mensaje
+      socket.emit('message received', 
+      updatedChat.messages
+      );
     } catch (error) {
       console.error('Error al crear y enviar el mensaje:', error);
     }
   });
+  
 
   socket.on('new demand', async (newDemandRecieved) => {
     const sellers = await User.find({ role: 'SELLER_ROLE' });
