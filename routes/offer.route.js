@@ -17,8 +17,10 @@ router.get('/getMyOffers', validateJWT, controller.getMyOffers);
 
 router.get('/', validateJWT, controller.getOffers);
 
-router.get('/:id', validateJWT, controller.getOffer);
-router.get('/demand/:demandId', validateJWT, controller.getOffersByDemandId); //MODIFIAR URL
+router.get('/:id', 
+// validateJWT, DESCOMENTAR
+controller.getOffer);
+router.get('/demand/:demandId', validateJWT, controller.getOffersByDemandId); 
 router.post(
   '/',
   [

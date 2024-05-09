@@ -3,7 +3,7 @@ const { Chat, Message } = require('../models');
 
 module.exports = {
   createChat: async (req, res = response) => {
-    const { buyer, seller, order } = req.body;
+    const { buyer, seller, order } = req.body; // ¿Deberia ser Ofert?
 
     const data = {
       buyer,
@@ -27,7 +27,7 @@ module.exports = {
         Chat.find({ $or: [{ seller: userId }, { buyer: userId }] })
           .limit(Number(limit))
           .skip(Number(skip))
-          .populate('order')
+          .populate('order') // deberia ser offer ? 
           .populate('seller', ['name', 'avatar'])
           .populate('buyer', ['name', 'avatar'])
           .sort({ createdAt: -1 }),
@@ -70,7 +70,7 @@ module.exports = {
       const chats = await Chat.find({
         $or: [{ seller: userId }, { buyer: userId }],
       })
-        .populate('order')
+        .populate('order') // ofert
         .populate('seller', ['name', 'avatar'])
         .populate('buyer', ['name', 'avatar'])
         .sort({ createdAt: -1 });
