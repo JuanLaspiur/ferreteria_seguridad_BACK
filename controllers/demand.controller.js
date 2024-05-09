@@ -227,8 +227,8 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
-  getMyClientsDemands: async (req, res = response) => {
-    const { lat, lng } = req.query;
+getMyClientsDemands: async (req, res = response) => {
+    const { lat, lng } = req.body;
   
     try {
       // Obtener el usuario vendedor actual
@@ -252,7 +252,8 @@ module.exports = {
       console.log(error);
       return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
     }
-  },
+}
+,
   
 
 
