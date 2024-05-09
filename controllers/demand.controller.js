@@ -228,7 +228,7 @@ module.exports = {
     }
   },
 getMyClientsDemands: async (req, res = response) => {
-    const { lat, lng } = req.body;
+  const { lat, lng } = req.query;
   
     try {
       // Obtener el usuario vendedor actual

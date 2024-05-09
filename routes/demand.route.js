@@ -20,8 +20,8 @@ router.get(
 );
 
 router.get('/myClientsDemands',  //  Nuevo metodo Juan 
-// validateJWT,
-// hasRole('SELLER_ROLE'), 
+validateJWT,
+ // hasRole('SELLER_ROLE'),
 controller.getMyClientsDemands)
 
 router.get(
