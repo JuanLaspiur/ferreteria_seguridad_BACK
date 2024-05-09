@@ -30,17 +30,17 @@ router.get('/:id', validateJWT, controller.getDemand);
 router.post(
   '/',
   [
-   // validateJWT,
+    validateJWT,
     check('type', 'El tipo de demanda es obligatorio')
       .not()
       .isEmpty()
       .isString(),
-    // check('products', 'Productos es obligatorios').not().isEmpty(),
+    check('products', 'Productos es obligatorios').not().isEmpty(),
     check('paymentType', 'El tipo de pago es obligatorio es obligatoria')
       .not()
       .isEmpty(),
     validateFields,
-   // hasRole('USER_ROLE'),
+    hasRole('USER_ROLE'),
   ],
   controller.createDemand,
 );
