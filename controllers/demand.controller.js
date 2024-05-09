@@ -1,5 +1,7 @@
 const { response } = require('express');
 const { Demand, User, Offer } = require('../models');
+require('dotenv').config();
+const SEARCH_RADIUS = process.env.SEARCH_RADIUS || 15000; // Valor predeterminado de 15 km si no se especifica en las variables de entorno
 
 module.exports = {
   /* createDemand: async (req, res = response) => {
@@ -225,4 +227,34 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
+  getMyClientsDemands: async (req, res = response) => {
+    const { lat, lng } = req.query;
+  
+    try {
+      // Obtener el usuario vendedor actual
+      const currentUser = req.user;
+  
+      // Obtener todas las demandas del vendedor actual
+      const demands = await Demand.find({ user: currentUser._id });
+  
+      // Obtener las coordenadas del vendedor actual
+      const sellerLocation = [parseFloat(lng), parseFloat(lat)];
+  
+      // Filtrar las demandas cercanas al vendedor
+      const nearbyDemands = demands.filter(demand => {
+        const demandLocation = demand.location.coordinates;
+        const distance = calculateDistance(sellerLocation, demandLocation);
+        return distance <= SEARCH_RADIUS;
+      });
+  
+      return res.json(nearbyDemands);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
+    }
+  },
+  
+
+
+
 };

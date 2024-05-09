@@ -19,6 +19,11 @@ router.get(
   controller.getMyDemands,
 );
 
+router.get('/myClientsDemands',  //  Nuevo metodo Juan 
+validateJWT,
+hasRole('SELLER_ROLE')
+,controller.getMyClientsDemands)
+
 router.get(
   '/',
   //  validateJWT, hasRole('SELLER_ROLE'),
