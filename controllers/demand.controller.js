@@ -227,24 +227,24 @@ module.exports = {
         .json({ msg: `A ocurrido un error: ${error.message}` });
     }
   },
-getMyClientsDemands: async (req, res = response) => {
-  const { lat, lng } = req.query;
+  getMyClientsDemands: async (req, res = response) => {
+    const { lat, lng } = req.query; // Obtener latitud y longitud desde el cuerpo de la solicitud
   
     try {
-      // Obtener el usuario vendedor actual
-      const currentUser = req.user;
-  
-      // Obtener todas las demandas del vendedor actual
-      const demands = await Demand.find({ user: currentUser._id });
-  
       // Obtener las coordenadas del vendedor actual
       const sellerLocation = [parseFloat(lng), parseFloat(lat)];
   
-      // Filtrar las demandas cercanas al vendedor
-      const nearbyDemands = demands.filter(demand => {
-        const demandLocation = demand.location.coordinates;
-        const distance = calculateDistance(sellerLocation, demandLocation);
-        return distance <= SEARCH_RADIUS;
+      // Encontrar todas las demandas cercanas a la ubicación del vendedor
+      const nearbyDemands = await Demand.find({
+        location: {
+          $nearSphere: {
+            $geometry: {
+              type: "Point",
+              coordinates: sellerLocation,
+            },
+            $maxDistance: SEARCH_RADIUS, // Distancia máxima para buscar demandas cercanas
+          },
+        },
       });
   
       return res.json(nearbyDemands);
@@ -252,7 +252,9 @@ getMyClientsDemands: async (req, res = response) => {
       console.log(error);
       return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
     }
-}
+  }
+  
+
 ,
   
 
