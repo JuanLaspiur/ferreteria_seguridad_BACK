@@ -37,6 +37,10 @@ const OfferSchema = Schema(
       type: Number,
       default: 0,
     },
+    chat: {
+      type: Schema.Types.ObjectId,
+      ref: 'Chat',
+    },
     delivery: {
       type: Number,
       min: 0,

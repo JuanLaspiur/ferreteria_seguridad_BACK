@@ -12,10 +12,10 @@ const ChatSchema = Schema(
       ref: 'User',
       required: [true, 'Vendedor es obligatorio'],
     },
-    order: {
+    ofert: {
       type: Schema.Types.ObjectId,
-      ref: 'Order',
-      required: [true, 'Orden es obligatoria'],
+      ref: 'Offer',
+      required: [true, 'Oferta es obligatoria'],
       unique: true,
     },
     messages: [

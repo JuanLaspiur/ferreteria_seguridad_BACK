@@ -3,12 +3,12 @@ const { Chat, Message } = require('../models');
 
 module.exports = {
   createChat: async (req, res = response) => {
-    const { buyer, seller, order } = req.body; // ¿Deberia ser Ofert?
+    const { buyer, seller, offer } = req.body;
 
     const data = {
       buyer,
       seller,
-      order,
+      offer,
     };
 
     const chat = new Chat(data);
@@ -27,7 +27,7 @@ module.exports = {
         Chat.find({ $or: [{ seller: userId }, { buyer: userId }] })
           .limit(Number(limit))
           .skip(Number(skip))
-          .populate('order') // deberia ser offer ? 
+          .populate('offer')
           .populate('seller', ['name', 'avatar'])
           .populate('buyer', ['name', 'avatar'])
           .sort({ createdAt: -1 }),
@@ -47,11 +47,7 @@ module.exports = {
     try {
       const chat = await Chat.findById(id);
       if (!chat) {
-        return res
-          .status(404)
-          .json({ msg: 'Chat not found' })
-          .populate('seller', ['name', 'avatar'])
-          .populate('buyer', ['name', 'avatar']);
+        return res.status(404).json({ msg: 'Chat not found' });
       }
       const messages = await Message.find({ chat: id });
 
@@ -70,7 +66,7 @@ module.exports = {
       const chats = await Chat.find({
         $or: [{ seller: userId }, { buyer: userId }],
       })
-        .populate('order') // ofert
+        .populate('offer')
         .populate('seller', ['name', 'avatar'])
         .populate('buyer', ['name', 'avatar'])
         .sort({ createdAt: -1 });
@@ -104,9 +100,7 @@ module.exports = {
   deleteChat: async (req, res = response) => {
     const { id } = req.params;
     try {
-      const chat = await Chat.findByIdAndUpdate(id, {
-        new: true,
-      });
+      const chat = await Chat.findByIdAndDelete(id);
 
       return res.json(chat);
     } catch (error) {

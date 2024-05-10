@@ -3,12 +3,12 @@ const { Order, Chat, Offer } = require('../models');
 
 module.exports = {
   createOrder: async (req, res = response) => {
-    const { offer, mercado_pago } = req.body;
+    const { offer, mercado_pago, chatId } = req.body;
 
     const orderfound = await Order.findOne({ offer, buyer: req.user._id });
     if (orderfound) {
       return res.status(400).json({
-        msg: `La ordend de la ${offer} ya existe`,
+        msg: `La orden de la ${offer} ya existe`,
       });
     }
     const offerFound = await Offer.findById(offer);
@@ -24,18 +24,13 @@ module.exports = {
       delivery: offerFound.delivery,
       total: offerFound.total,
       seller: offerFound.seller,
-      mercado_pago
+      mercado_pago,
+      chat: chatId // Aquí asignamos el ID del chat recibido como parámetro
     };
 
     const order = new Order(data);
-    const chat = new Chat({
-      order: order._id,
-      buyer: req.user._id,
-      seller: offerFound.seller,
-    });
-    await chat.save();
-    order.chat = chat._id;
     await order.save();
+
     offerFound.status = 'accepted';
     offerFound.order = order;
     await offerFound.save();
