@@ -22,12 +22,10 @@ const DemandSchema = Schema(
     },
     products: [
       {
-        name: String, //martillo
-        quantity: Number, //5
-        // required: false,
+        name: String,
+        quantity: Number,
       },
     ],
-
     offers: [
       {
         type: Schema.Types.ObjectId,
@@ -38,8 +36,10 @@ const DemandSchema = Schema(
   {
     timestamps: true,
     versionKey: false,
-  },
+  }
 );
+
+DemandSchema.index({ location: '2dsphere' });
 
 DemandSchema.methods.toJSON = function () {
   const { __v, state, ...data } = this.toObject();
@@ -47,3 +47,4 @@ DemandSchema.methods.toJSON = function () {
 };
 
 module.exports = model('Demand', DemandSchema);
+
