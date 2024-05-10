@@ -1,70 +1,80 @@
-const { Router } = require('express');
-const { check } = require('express-validator');
+const { Router } = require("express");
+const { check } = require("express-validator");
 
 const {
   validateJWT,
   validateFields,
   isAdminRole,
   hasRole,
-} = require('../middlewares');
+} = require("../middlewares");
 
-const { offer: controller } = require('../controllers');
+const { offer: controller } = require("../controllers");
 
-const { offerExist } = require('../helpers/db-validators');
+const { offerExist } = require("../helpers/db-validators");
 
 const router = Router();
-router.get('/getMyOffers', validateJWT, controller.getMyOffers);
+router.get("/getMyOffers", validateJWT, controller.getMyOffers);
 
-router.get('/', validateJWT, controller.getOffers);
+router.get("/", validateJWT, controller.getOffers);
 
-router.get('/:id', 
-// validateJWT, DESCOMENTAR
-controller.getOffer);
-router.get('/demand/:demandId', validateJWT, controller.getOffersByDemandId); 
+router.get(
+  "/:id",
+  // validateJWT, DESCOMENTAR
+  controller.getOffer
+);
+router.get("/demand/:demandId", validateJWT, controller.getOffersByDemandId);
 router.post(
-  '/',
+  "/",
   //[
-    //validateJWT,
+  //validateJWT,
   //  check('demand', 'La demanda es obligatoria').not().isEmpty(),
-    // check('products', 'Los productos  de  la oferta son obligatorios')
-    //   .not()
-    //   .isEmpty()
-    //   .isArray(),
-   // validateFields,
-   // hasRole('SELLER_ROLE'),
+  // check('products', 'Los productos  de  la oferta son obligatorios')
+  //   .not()
+  //   .isEmpty()
+  //   .isArray(),
+  // validateFields,
+  // hasRole('SELLER_ROLE'),
   //],
-  controller.createOffer,
+  controller.createOffer
 );
 
 router.put(
-  '/:id',
+  "/:id",
   [
     validateJWT,
-    check('demand', 'La demanda es obligatoria').not().isEmpty(),
-    check('products', 'Los productos  de  la oferta son obligatorios')
+    check("demand", "La demanda es obligatoria").not().isEmpty(),
+    check("products", "Los productos  de  la oferta son obligatorios")
       .not()
       .isEmpty()
       .isArray(),
-    check('id').isMongoId(),
-    check('id').custom(offerExist),
+    check("id").isMongoId(),
+    check("id").custom(offerExist),
     validateFields,
   ],
   validateJWT,
-  controller.updateOffer,
+  controller.updateOffer
 );
 
+router,
+  put(
+    "/updateStatus/:id",
+    validateJWT,
+    hasRole("USER_ROLE"),
+    controller.updateOfferStatus
+  );
+
 router.delete(
-  '/:id',
+  "/:id",
   [
     validateJWT,
     isAdminRole,
-    check('id', 'ID invalido').isMongoId(),
-    check('id').custom(offerExist),
+    check("id", "ID invalido").isMongoId(),
+    check("id").custom(offerExist),
     validateFields,
-    hasRole('SELLER_ROL'),
+    hasRole("SELLER_ROL"),
   ],
   validateJWT,
-  controller.deleteOffer,
+  controller.deleteOffer
 );
 
 module.exports = router;
