@@ -3,17 +3,17 @@ const { Offer, Demand } = require('../models');
 
 module.exports = {
   createOffer: async (req, res = response) => {
-    const { demand, products, delivery, seller } = req.body;
+    const { demand, products, delivery, seller, total } = req.body;
     const demandFound = await Demand.findById(demand);
 
     if (!demandFound) {
       return res.status(404).json({ msg: 'Demand not found' });
     }
 
-    var total = 0;
+    /* var total = 0;
     products.forEach((element) => {
       total += element.price * element.quantity;
-    });
+    }); */
 
     const data = {
       seller,
