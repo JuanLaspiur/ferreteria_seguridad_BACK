@@ -3,7 +3,7 @@ const { Offer, Demand } = require('../models');
 
 module.exports = {
   createOffer: async (req, res = response) => {
-    const { demand, products, delivery } = req.body;
+    const { demand, products, delivery,seller } = req.body;
     const demandFound = await Demand.findById(demand);
 
     if (!demandFound) {
@@ -16,7 +16,7 @@ module.exports = {
     });
 
     const data = {
-      seller: req.user._id,
+      seller,
       demand,
       products,
       delivery,
