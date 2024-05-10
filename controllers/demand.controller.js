@@ -228,13 +228,11 @@ module.exports = {
     }
   },
   getMyClientsDemands: async (req, res = response) => {
-    const { lat, lng } = req.query; // Obtener latitud y longitud desde la consulta
-    const SEARCH_RADIUS = process.env.SEARCH_RADIUS || 15000;
+    const { lat, lng } = req.query; 
+    const SEARCH_RADIUS = process.env.SEARCH_RADIUS || 15000; // 15 Km
     try {
-      // Obtener las coordenadas del vendedor actual
       const sellerLocation = [parseFloat(lng), parseFloat(lat)];
 
-      // Encontrar todas las demandas cercanas a la ubicación del vendedor
       const nearbyDemands = await Demand.find({
         location: {
           $nearSphere: {
@@ -242,7 +240,8 @@ module.exports = {
               type: "Point",
               coordinates: sellerLocation,
             },
-            $maxDistance: SEARCH_RADIUS, // Distancia máxima para buscar demandas cercanas
+            $maxDistance: SEARCH_RADIUS, // Maximum distance to search for nearby demands
+
           },
         },
       });
@@ -250,7 +249,7 @@ module.exports = {
       return res.json(nearbyDemands);
     } catch (error) {
       console.log(error);
-      return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
+      return res.status(500).json({ msg: `An error occurred: ${error.message}` });
     }
   },
   
