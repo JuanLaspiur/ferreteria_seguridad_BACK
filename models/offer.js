@@ -15,11 +15,13 @@ const OfferSchema = Schema(
     order: {
       type: Schema.Types.ObjectId,
       ref: 'Order',
+      required: false,
     },
     status: {
       type: String,
       enum: ['created', 'accepted', 'rejected', 'canceled'],
       default: 'created',
+      required: false,
     },
 
     products: [
@@ -27,7 +29,7 @@ const OfferSchema = Schema(
         name: String,
         quantity: Number,
         price: Number,
-        description: String,
+       // description: String,
         // required: false,
       },
     ],
