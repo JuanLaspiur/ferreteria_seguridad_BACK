@@ -23,7 +23,7 @@ controller.getOffer);
 router.get('/demand/:demandId', validateJWT, controller.getOffersByDemandId); 
 router.post(
   '/',
-  [
+  //[
     //validateJWT,
   //  check('demand', 'La demanda es obligatoria').not().isEmpty(),
     // check('products', 'Los productos  de  la oferta son obligatorios')
@@ -32,7 +32,7 @@ router.post(
     //   .isArray(),
    // validateFields,
    // hasRole('SELLER_ROLE'),
-  ],
+  //],
   controller.createOffer,
 );
 
