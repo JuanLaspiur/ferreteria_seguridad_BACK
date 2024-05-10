@@ -1,5 +1,5 @@
 const { response } = require('express');
-const { Offer, Demand,Chat } = require('../models');
+const { Offer, Demand, Chat } = require('../models');
 module.exports = {
   createOffer : async (req, res = response) => {
     const { seller, demand, products, delivery } = req.body;
@@ -156,13 +156,16 @@ module.exports = {
     const { id } = req.params;
     const { status, buyerID } = req.body;
 
+    console.log('¿Este es el Id de la OFERTA? ' + id);
+  
     try {
       const offer = await Offer.findByIdAndUpdate(id, { status }, { new: true });
-
+      console.log('Oferta entoncrada ' + JSON.stringify(offer))
+  
       if (!offer) {
         return res.status(404).json({ msg: 'Offer not found' });
       }
-
+  
       if (status === 'accepted') {
         const chat = new Chat({
           offer: id,
@@ -170,19 +173,19 @@ module.exports = {
           seller: offer.seller,
         });
         await chat.save();
-
+  
         // Asignar el ID del chat a la oferta
-        offer.chat = chat._id;
-
+        offer.chat = chat._id;  
         // Guardar la oferta actualizada con el ID del chat asociado
         await offer.save();
       }
-
+  
       return res.json(offer);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: `An error occurred: ${error.message}` });
     }
   }
+  
   
 };

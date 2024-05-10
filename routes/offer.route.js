@@ -59,7 +59,6 @@ router.
   put(
     "/updateStatus/:id",
     validateJWT,
-    hasRole("USER_ROLE"),
     controller.updateOfferStatus
   );
 
