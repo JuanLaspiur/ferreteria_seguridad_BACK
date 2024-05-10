@@ -23,8 +23,7 @@ const ProductSchema = Schema({
   category: {
     type: Schema.Types.ObjectId,
     ref: "Category",
-    required: [true, "La categoria es obligatoria"],
-  },
+    },
   description: {
     type: String,
     default: "Sin descripción",

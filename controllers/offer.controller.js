@@ -1,36 +1,56 @@
 const { response } = require('express');
-const { Offer, Demand } = require('../models');
+const { Offer, Demand, Product } = require('../models');
 
 module.exports = {
-  createOffer: async (req, res = response) => {
-    const { demand, products, delivery, seller, total } = req.body;
+createOffer : async (req, res = response) => {
+  const { demand, products, delivery, seller } = req.body;
+
+  try {
     const demandFound = await Demand.findById(demand);
 
     if (!demandFound) {
       return res.status(404).json({ msg: 'Demand not found' });
     }
 
-    /* var total = 0;
-    products.forEach((element) => {
-      total += element.price * element.quantity;
-    }); */
+    const createdProducts = await Promise.all(products.map(async (productData) => {
+      const product = new Product({
+        name: productData.name,
+        state: true,
+        user: seller, // Assuming the seller's ID is used as the user
+        price: productData.price,
+        category: productData.category,
+        available: true, // Assuming the product is available initially
+        img: productData.img
+      });
 
-    const data = {
+      await product.save();
+      return product._id; // Return the ID of the created product
+    }));
+
+    const total = createdProducts.reduce((acc, productId) => {
+      const productData = products.find(product => product._id === productId);
+      return acc + (productData.price * productData.quantity);
+    }, 0);
+
+    const offer = new Offer({
       seller,
       demand,
-      products,
+      products: createdProducts,
       delivery,
       total,
-    };
+    });
 
-    const offer = Offer(data);
     await offer.save();
 
     demandFound.offers.push(offer._id);
     await demandFound.save();
 
     return res.status(201).json(offer);
-  },
+  } catch (error) {
+    console.error('Error creating offer:', error);
+    return res.status(500).json({ msg: 'Internal server error' });
+  }
+},
   getOffers: async (req, res = response) => {
     const { limit = 5, skip = 0 } = req.query;
     try {
