@@ -1,7 +1,7 @@
 const { response } = require('express');
 const { Demand, User, Offer } = require('../models');
 require('dotenv').config();
-const SEARCH_RADIUS =  15000; //process.env.SEARCH_RADIUS || Valor predeterminado de 15 km si no se especifica en las variables de entorno
+
 
 module.exports = {
   /* createDemand: async (req, res = response) => {
@@ -229,7 +229,7 @@ module.exports = {
   },
   getMyClientsDemands: async (req, res = response) => {
     const { lat, lng } = req.query; // Obtener latitud y longitud desde la consulta
-
+    const SEARCH_RADIUS = process.env.SEARCH_RADIUS || 15000;
     try {
       // Obtener las coordenadas del vendedor actual
       const sellerLocation = [parseFloat(lng), parseFloat(lat)];
