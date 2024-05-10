@@ -18,6 +18,15 @@ const OderSchema = Schema(
       required: [true, 'Oferta es obligatorio'],
       unique: true,
     },
+    products: [
+      {
+        name: String,
+        quantity: Number,
+        price: Number,
+       // description: String,
+        // required: false,
+      },
+    ],
     total: {
       type: Number,
       default: 0,

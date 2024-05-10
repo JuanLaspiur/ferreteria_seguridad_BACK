@@ -3,7 +3,7 @@ const { Order, Chat, Offer } = require('../models');
 
 module.exports = {
   createOrder: async (req, res = response) => {
-    const { offer, mercado_pago, chatId } = req.body;
+    const { offer, mercado_pago, chatID, products, total, delivery} = req.body;
 
     const orderfound = await Order.findOne({ offer, buyer: req.user._id });
     if (orderfound) {
@@ -19,13 +19,14 @@ module.exports = {
     }
 
     const data = {
-      buyer: req.user._id,
+      buyer: offerFound.buyer,
       offer,
-      delivery: offerFound.delivery,
-      total: offerFound.total,
+      products,
+      total, // Agregamos el total al objeto de datos
+      delivery,
       seller: offerFound.seller,
       mercado_pago,
-      chat: chatId // Aquí asignamos el ID del chat recibido como parámetro
+      chat: chatID // Asignamos el ID del chat recibido como parámetro
     };
 
     const order = new Order(data);
