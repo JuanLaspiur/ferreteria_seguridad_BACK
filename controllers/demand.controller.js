@@ -228,13 +228,12 @@ module.exports = {
     }
   },
   getMyClientsDemands: async (req, res = response) => {
-    const { lat, lng } = req.query; // Obtener latitud y longitud desde el cuerpo de la solicitud
-    console.log('Latitud: ' + lat +'  Longuit: ' +lng );
-  
+    const { lat, lng } = req.query; // Obtener latitud y longitud desde la consulta
+
     try {
       // Obtener las coordenadas del vendedor actual
       const sellerLocation = [parseFloat(lng), parseFloat(lat)];
-  
+
       // Encontrar todas las demandas cercanas a la ubicación del vendedor
       const nearbyDemands = await Demand.find({
         location: {
@@ -247,16 +246,13 @@ module.exports = {
           },
         },
       });
-  
+
       return res.json(nearbyDemands);
     } catch (error) {
       console.log(error);
       return res.status(500).json({ msg: `Ha ocurrido un error: ${error.message}` });
     }
-  }
-  
-
-,
+  },
   
 
 
