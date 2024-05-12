@@ -21,7 +21,7 @@ module.exports = {
     const data = {
       buyer: buyerID,
       offer: offerID,
-      products,
+      products,         
       total, // Agregamos el total al objeto de datos
       delivery,
       seller: offerFound.seller,
