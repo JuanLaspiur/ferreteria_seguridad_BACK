@@ -13,8 +13,9 @@ const OrderSchema = Schema(
       required: [true, 'El vendedor es obligatorio'],
     },
     offer: {
-      type: String,
-   
+      type: Schema.Types.ObjectId,
+      ref: 'Offer',
+      required: [true, 'La oferta es obligatoria'],
     }, 
     products: [
       {
@@ -59,7 +60,7 @@ OrderSchema.methods.toJSON = function () {
   return data;
 };
 
-// Aquí eliminamos el índice único en el campo 'offer'
+// Here we remove the unique index on the 'offer' field
 OrderSchema.index({ offer: 1 }, { unique: false });
 
 module.exports = model('Order', OrderSchema);

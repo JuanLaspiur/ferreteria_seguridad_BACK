@@ -16,19 +16,15 @@ module.exports = {
       buyer: buyerID,
       offer: offerID,
       products,         
-      total, // Agregamos el total al objeto de datos
+      total, 
       delivery,
       seller: offerFound.seller,
       mercado_pago:true,
-      chat: chatID // Asignamos el ID del chat recibido como parámetro
+      chat: chatID 
     };
 
     const order = new Order(data);
     await order.save();
-
-/*    offerFound.status = 'accepted';
-    offerFound.order = order;
-    await offerFound.save(); */
 
     return res.status(201).json(order);
   },
@@ -129,7 +125,7 @@ module.exports = {
         return res.status(400).json({ msg: 'La orden no existe' });
       }
   
-      // Devuelve la orden actualizada como respuesta
+      //  Returns the updated order as a response.
       return res.json(order);
     } catch (error) {
       console.log(error);
