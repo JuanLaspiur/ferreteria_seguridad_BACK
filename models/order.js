@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const OderSchema = Schema(
+const OrderSchema = Schema(
   {
     buyer: {
       type: Schema.Types.ObjectId,
@@ -58,9 +58,9 @@ const OderSchema = Schema(
   },
 );
 
-OderSchema.methods.toJSON = function () {
+OrderSchema.methods.toJSON = function () {
   const { __v, state, ...data } = this.toObject();
   return data;
 };
 
-module.exports = model('Order', OderSchema);
+module.exports = model('Order', OrderSchema);
