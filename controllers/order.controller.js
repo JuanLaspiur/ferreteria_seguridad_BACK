@@ -5,16 +5,16 @@ module.exports = {
   createOrder: async (req, res = response) => {
     const { offerID, buyerID, chatID, products, total, delivery} = req.body;
 
- /*   const offerFound = await Offer.findById(offerID);
+   const offerFound = await Offer.findById(offerID);
     if (!offerFound) {
       return res.status(400).json({
         msg: `La oferta no existe`,
       });
-    } */
+    } 
 
     const data = {
       buyer: buyerID,
-    // offer: offerID,
+      offer: offerID,
       products,         
       total, // Agregamos el total al objeto de datos
       delivery,
