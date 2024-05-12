@@ -16,7 +16,6 @@ const OderSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: 'Offer',
       required: [true, 'Oferta es obligatorio'],
-      unique: true,
     },
     products: [
       {
