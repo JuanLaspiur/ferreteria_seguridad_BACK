@@ -5,24 +5,23 @@ const OrderSchema = Schema(
     buyer: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: [true, 'Usuario es obligatorio'],
+      required: [true, 'El comprador es obligatorio'],
     },
     seller: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-     },
+      required: [true, 'El vendedor es obligatorio'],
+    },
     offer: {
       type: Schema.Types.ObjectId,
       ref: 'Offer',
-      required: [true, 'Oferta es obligatorio'],
+      required: [true, 'La oferta es obligatoria'],
     },
     products: [
       {
         name: String,
         quantity: Number,
         price: Number,
-       // description: String,
-        // required: false,
       },
     ],
     total: {
@@ -33,7 +32,6 @@ const OrderSchema = Schema(
       type: Number,
       default: 0,
     },
-
     chat: {
       type: Schema.Types.ObjectId,
       ref: 'Chat',
@@ -42,14 +40,13 @@ const OrderSchema = Schema(
       type: Boolean,
       default: false,
     },
-    // MercadoPago
     mercado_pago: {
       type: Boolean,
       default: false,
     },
     status: {
-      type:String,
-      default:'pending'
+      type: String,
+      default: 'pending'
     }
   },
   {
@@ -59,8 +56,12 @@ const OrderSchema = Schema(
 );
 
 OrderSchema.methods.toJSON = function () {
-  const { __v, state, ...data } = this.toObject();
+  const { __v, ...data } = this.toObject();
   return data;
 };
 
+// Aquí eliminamos el índice único en el campo 'offer'
+OrderSchema.index({ offer: 1 }, { unique: false });
+
 module.exports = model('Order', OrderSchema);
+
