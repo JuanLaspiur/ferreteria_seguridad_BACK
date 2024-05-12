@@ -12,11 +12,10 @@ const OrderSchema = Schema(
       ref: 'User',
       required: [true, 'El vendedor es obligatorio'],
     },
-   /* offer: {
-      type: Schema.Types.ObjectId,
-      ref: 'Offer',
-      required: [true, 'La oferta es obligatoria'],
-    }, */
+    offer: {
+      type: String,
+   
+    }, 
     products: [
       {
         name: String,
