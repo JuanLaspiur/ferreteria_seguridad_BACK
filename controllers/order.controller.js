@@ -5,12 +5,7 @@ module.exports = {
   createOrder: async (req, res = response) => {
     const { offerID, buyerID, chatID, products, total, delivery} = req.body;
 
-    const orderfound = await Order.findOne({ offer: offerID, buyer: buyerID });
-    if (orderfound) {
-      return res.status(400).json({
-        msg: `La orden ya existe`,
-      });
-    }
+
     const offerFound = await Offer.findById(offerID);
     if (!offerFound) {
       return res.status(400).json({
