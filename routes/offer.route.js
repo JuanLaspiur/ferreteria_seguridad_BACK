@@ -58,7 +58,7 @@ router.put(
 router.
   put(
     "/updateStatus/:id",
-    validateJWT,
+ //   validateJWT,
     controller.updateOfferStatus
   );
 

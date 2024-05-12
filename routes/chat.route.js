@@ -17,7 +17,7 @@ router.get('/malHECHO/:id', controller.getChat);
 
 router.get('/forId/:userId', controller.getChatsByUserId);
 
-router.post(
+//router.post(
 //   '/',
 //   [
 //     validateJWT,
@@ -26,8 +26,8 @@ router.post(
 //     check('order', 'La orden es obligatorio').not().isEmpty(),
 //     validateFields,
 //  ],
-  controller.createChat,
-);
+//  controller.createChat,
+//);
 
 // router.put(
 //   '/:id',
