@@ -1,5 +1,6 @@
 const mercadopago = require('mercadopago');
 require('dotenv').config();
+const { Order} = require('../models');
 
 mercadopago.configure({
   access_token: `${process.env.MPAGO_TOKEN}`
@@ -27,8 +28,11 @@ mercadopago.configure({
   }
 }; */
 const createOrderMERCADOPAGO = async (req, res) => {
+
+const {listProduct, order} = req.body;
+
   try { 
-    const items = req.body.map(product => ({
+    const items = listProduct.map(product => ({
       id: product.user,
       description: product.category,
       title: product.name,
@@ -40,7 +44,7 @@ const createOrderMERCADOPAGO = async (req, res) => {
 
     const result = await mercadopago.preferences.create({
       items: items,
-      notification_url: `${process.env.BACK_URL}webHook`
+      notification_url: `${process.env.BACK_URL}webHook?orderId=${order._id}`
     });
 
     
@@ -53,23 +57,30 @@ const createOrderMERCADOPAGO = async (req, res) => {
   }
 };
 
-const webHook = async ( req,res) =>{
-  console.log('Entré')
+const webHook = async (req, res) => {
+  console.log('Entré');
   try {
-    const payment = req.query;
-    console.log(payment);
-    if (payment.type === "payment") {
-      const data = await mercadopago.payment.findById(payment["data.id"]);
-      console.log(data);
+    const { orderId } = req.query; 
+    console.log('ID de la orden:', orderId);
+
+    // Busca la orden en la base de datos utilizando el ID capturado
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
     }
 
-    res.sendStatus(204);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Something goes wrong" });
-  }
+    // Marca la orden como pagada
+    order.payed = true;
+    await order.save();
 
+    console.log('Orden marcada como pagada:', order);
+
+    res.sendStatus(204); // Envía una respuesta exitosa
+  } catch (error) {
+    console.log(error)
+  }
 }
+
 
 module.exports = {
   createOrderMERCADOPAGO,
