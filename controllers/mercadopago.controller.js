@@ -40,7 +40,7 @@ const createOrderMERCADOPAGO = async (req, res) => {
 
     const result = await mercadopago.preferences.create({
       items: items,
-      notification_url: ""
+      notification_url: `${process.env.BACK_URL}webHook`
     });
 
     
