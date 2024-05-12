@@ -10,8 +10,7 @@ const OderSchema = Schema(
     seller: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
-    },
+     },
     offer: {
       type: Schema.Types.ObjectId,
       ref: 'Offer',
