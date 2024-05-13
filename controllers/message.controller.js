@@ -147,10 +147,8 @@ module.exports = {
     }
   },
   createImageMessage: async (req, res = response) => {
-    console.error('Entre ')
-    const { imageUrl  } = req.body;
-    console.error('Url de la imagen ' + imageUrl)
-   /* try {
+
+    try {
       console.error('ENTRE ')
       // Verificar si existe la carpeta, si no, crearla
       const folderPath = path.join(__dirname, "assess", "imagenChat");
@@ -179,6 +177,6 @@ module.exports = {
     } catch (error) {
       console.error("Error al guardar la imagen:", error);
       return res.status(500).json({ error: "Error interno del servidor" });
-    } */
+    } 
   },
 };
