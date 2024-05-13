@@ -2,6 +2,12 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const uploadsFiles = require('../config/multerfiles');
 const uploads = require('../config/multer');
+const multer = require('multer')
+
+const upload = multer({dest:'assets/chatImage'});
+
+
+
 
 const { validateJWT, validateFields, isAdminRole } = require('../middlewares');
 
@@ -26,6 +32,9 @@ router.post(
   ],
   controller.createMessage,
 );
+
+router.post('/createImageMessage', upload.single('chat_image') ,controller.createImageMessage)
+
 
 router.put(
   '/:id',

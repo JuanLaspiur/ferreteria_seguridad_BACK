@@ -20,6 +20,10 @@ const MessageSchema = Schema(
       type: String,
       required: false,
     },
+    image: {
+      type:String,
+      required: false
+    }
   },
   {
     timestamps: true,

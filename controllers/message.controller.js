@@ -5,7 +5,7 @@ const { handleUpload } = require('../config/cloudinary');
 module.exports = {
   createMessage: async (req, res = response) => {
     const { chat, text, sender, docs } = req.body;
-    
+
     const chatFound = await Chat.findById(chat);
     if (!chatFound) {
       return res.status(400).json({ msg: 'No existe el chat' });
@@ -27,7 +27,7 @@ module.exports = {
       chat,
       text,
       sender,
-      docs
+      docs:dataURI,
     };
 
     const message = new Message(data);
@@ -140,5 +140,8 @@ module.exports = {
       console.error(error);
       return res.status(500).json({ msg: 'Error al obtener los mensajes del chat' });
     }
+  },
+  createImageMessage: async (req, res= response) => {
+    response.send('Termina')
   }
 };
