@@ -147,7 +147,10 @@ module.exports = {
     }
   },
   createImageMessage: async (req, res = response) => {
-    try {
+
+    console.error('Entre ')
+   /* try {
+      console.error('ENTRE ')
       // Verificar si existe la carpeta, si no, crearla
       const folderPath = path.join(__dirname, "assess", "imagenChat");
       if (!fs.existsSync(folderPath)) {
@@ -155,7 +158,7 @@ module.exports = {
       }
 
       // Obtener la URI de la imagen del cuerpo de la solicitud
-      const { image } = req.body;
+      const { imageUrl  } = req.body;
 
       // Generar un nombre de archivo único para la imagen (puedes utilizar un paquete como `uuid`)
       const fileName = `image_${Date.now()}.webp`;
@@ -175,6 +178,6 @@ module.exports = {
     } catch (error) {
       console.error("Error al guardar la imagen:", error);
       return res.status(500).json({ error: "Error interno del servidor" });
-    }
+    } */
   },
 };
