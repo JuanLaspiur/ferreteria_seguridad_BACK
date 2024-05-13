@@ -61,7 +61,7 @@ const webHook = async (req, res) => {
   try {
     const payment = req.query;
     const { orderId } = req.query; 
-    console.error('Pago   ' + payment);
+    console.error('Pago   ' +JSON.stringify(payment));
 
     if (payment.type === "payment") {
      const order = await Order.findById(orderId);
