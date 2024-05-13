@@ -47,7 +47,7 @@ const {listProduct, order} = req.body;
       back_urls:{
         success:`${process.env.BACK_URL}webHook?orderId=${order._id}`
       },
-    //  notification_url: `${process.env.BACK_URL}webHook?orderId=${order._id}`
+      notification_url: `${process.env.BACK_URL}webHook?orderId=${order._id}`
     });
 
     
