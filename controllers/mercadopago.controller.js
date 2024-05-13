@@ -44,12 +44,8 @@ const {listProduct, order} = req.body;
 
     const result = await mercadopago.preferences.create({
       items: items,
-   /*   back_urls:{
-        success:`${process.env.BACK_URL}webHook?orderId=${order._id}`
-      }, */
-      notification_url: `${process.env.BACK_URL}mpago/webHook?orderId=${order._id}`
+       notification_url: `${process.env.BACK_URL}mpago/webHook?orderId=${order._id}`
     });
-
     
     res.json({"url": result.body.init_point});
 
