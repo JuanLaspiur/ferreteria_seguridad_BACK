@@ -154,8 +154,8 @@ module.exports = {
         fs.mkdirSync(folderPath, { recursive: true });
       }
   
-      // Obtener la imagen del cuerpo de la solicitud
-      const image = req.files.image;
+      // Obtener la URL de la imagen del cuerpo de la solicitud
+      const { imageUrl } = req.body;
   
       // Generar un nombre de archivo único para la imagen
       const fileName = `image_${Date.now()}.webp`;
@@ -163,8 +163,10 @@ module.exports = {
       // Ruta de destino para guardar la imagen
       const imagePath = path.join(folderPath, fileName);
   
-      // Guardar la imagen en el servidor
-      await image.mv(imagePath);
+      // Guardar la imagen en el servidor (aquí podría ser necesario descargarla primero si está en una URL remota)
+      // En este ejemplo, suponemos que imageUrl ya contiene la URL de la imagen local
+      // Si no es así, necesitarás lógica para descargarla primero
+      // Aquí puedes utilizar bibliotecas como axios para descargar la imagen si es necesario
   
       // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
       const newImageUri = `/assets/imagenChat/${fileName}`;
@@ -175,4 +177,5 @@ module.exports = {
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   }
+  
 };
