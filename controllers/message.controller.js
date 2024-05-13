@@ -147,36 +147,32 @@ module.exports = {
     }
   },
   createImageMessage: async (req, res = response) => {
-
     try {
-      console.error('ENTRE ')
       // Verificar si existe la carpeta, si no, crearla
-      const folderPath = path.join(__dirname, "assess", "imagenChat");
+      const folderPath = path.join(__dirname, "assets", "imagenChat");
       if (!fs.existsSync(folderPath)) {
         fs.mkdirSync(folderPath, { recursive: true });
       }
-
-      // Obtener la URI de la imagen del cuerpo de la solicitud
-      const { imageUrl  } = req.body;
-
-      // Generar un nombre de archivo único para la imagen (puedes utilizar un paquete como `uuid`)
+  
+      // Obtener la imagen del cuerpo de la solicitud
+      const image = req.files.image;
+  
+      // Generar un nombre de archivo único para la imagen
       const fileName = `image_${Date.now()}.webp`;
-
+  
       // Ruta de destino para guardar la imagen
       const imagePath = path.join(folderPath, fileName);
-
-      // Convertir la imagen a formato WebP utilizando Sharp
-      await sharp(image).toFormat("webp").toFile(imagePath);
-
+  
+      // Guardar la imagen en el servidor
+      await image.mv(imagePath);
+  
       // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
-      const newImageUri = `/assess/imagenChat/${fileName}`;
-
-      return res
-        .status(201)
-        .json({ uri: newImageUri });
+      const newImageUri = `/assets/imagenChat/${fileName}`;
+  
+      return res.status(201).json({ uri: newImageUri });
     } catch (error) {
       console.error("Error al guardar la imagen:", error);
       return res.status(500).json({ error: "Error interno del servidor" });
-    } 
-  },
+    }
+  }
 };
