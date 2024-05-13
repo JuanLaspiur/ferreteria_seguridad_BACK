@@ -1,6 +1,9 @@
-const { response } = require('express');
-const { Message, Chat } = require('../models');
-const { handleUpload } = require('../config/cloudinary');
+const { response } = require("express");
+const { Message, Chat } = require("../models");
+const { handleUpload } = require("../config/cloudinary");
+const fs = require("fs");
+const path = require("path");
+const sharp = require("sharp");
 
 module.exports = {
   createMessage: async (req, res = response) => {
@@ -8,13 +11,13 @@ module.exports = {
 
     const chatFound = await Chat.findById(chat);
     if (!chatFound) {
-      return res.status(400).json({ msg: 'No existe el chat' });
+      return res.status(400).json({ msg: "No existe el chat" });
     }
     let cldRes = null;
 
     if (req.file) {
-      const b64 = Buffer.from(req.file.buffer).toString('base64');
-      let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64;
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
       cldRes = await handleUpload(dataURI);
     }
     if (cldRes) {
@@ -27,7 +30,7 @@ module.exports = {
       chat,
       text,
       sender,
-      docs:dataURI,
+      docs,
     };
 
     const message = new Message(data);
@@ -65,13 +68,13 @@ module.exports = {
     try {
       const message = await Message.findById(id);
       if (!message) {
-        return res.status(404).json({ msg: 'No existe el mensaje' });
+        return res.status(404).json({ msg: "No existe el mensaje" });
       }
       if (message.sender.toString() !== req.user._id.toString()) {
-        return res.status(401).json({ msg: 'No autorizado' });
+        return res.status(401).json({ msg: "No autorizado" });
       }
 
-      return res.json({ msg: 'ok', message });
+      return res.json({ msg: "ok", message });
     } catch (error) {
       console.log(error);
       return res
@@ -101,10 +104,10 @@ module.exports = {
     try {
       const message = await Message.findByIdAndDelete(id);
       if (!message) {
-        return res.status(404).json({ msg: 'No existe el mensaje' });
+        return res.status(404).json({ msg: "No existe el mensaje" });
       }
       if (message.sender.toString() !== req.user._id.toString()) {
-        return res.status(401).json({ msg: 'No autorizado' });
+        return res.status(401).json({ msg: "No autorizado" });
       }
       const chat = await Chat.findById(message.chat);
       chat.messages.pull(message._id);
@@ -112,7 +115,7 @@ module.exports = {
 
       await Message.findByIdAndDelete(id);
 
-      return res.json({ msg: 'ok borrado exitosamente', message });
+      return res.json({ msg: "ok borrado exitosamente", message });
     } catch (error) {
       console.log(error);
       return res
@@ -125,23 +128,53 @@ module.exports = {
 
     try {
       const chat = await Chat.findById(chatId).populate({
-        path: 'messages',
+        path: "messages",
         options: {
-          sort: { createdAt: -1 } 
-        }
+          sort: { createdAt: -1 },
+        },
       });
 
       if (!chat) {
-        return res.status(404).json({ msg: 'No existe el chat' });
+        return res.status(404).json({ msg: "No existe el chat" });
       }
 
       return res.json(chat.messages);
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ msg: 'Error al obtener los mensajes del chat' });
+      return res
+        .status(500)
+        .json({ msg: "Error al obtener los mensajes del chat" });
     }
   },
-  createImageMessage: async (req, res= response) => {
-    response.send('Termina')
-  }
+  createImageMessage: async (req, res = response) => {
+    try {
+      // Verificar si existe la carpeta, si no, crearla
+      const folderPath = path.join(__dirname, "assess", "imagenChat");
+      if (!fs.existsSync(folderPath)) {
+        fs.mkdirSync(folderPath, { recursive: true });
+      }
+
+      // Obtener la URI de la imagen del cuerpo de la solicitud
+      const { image } = req.body;
+
+      // Generar un nombre de archivo único para la imagen (puedes utilizar un paquete como `uuid`)
+      const fileName = `image_${Date.now()}.webp`;
+
+      // Ruta de destino para guardar la imagen
+      const imagePath = path.join(folderPath, fileName);
+
+      // Convertir la imagen a formato WebP utilizando Sharp
+      await sharp(image).toFormat("webp").toFile(imagePath);
+
+      // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
+      const newImageUri = `/assess/imagenChat/${fileName}`;
+
+      return res
+        .status(201)
+        .json({ uri: newImageUri });
+    } catch (error) {
+      console.error("Error al guardar la imagen:", error);
+      return res.status(500).json({ error: "Error interno del servidor" });
+    }
+  },
 };
