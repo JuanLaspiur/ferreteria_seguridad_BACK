@@ -147,8 +147,11 @@ module.exports = {
     }
   },
   createImageMessage: async (req, res = response) => {
-
     console.error('Entre ')
+
+
+
+    //lko
    /* try {
       console.error('ENTRE ')
       // Verificar si existe la carpeta, si no, crearla
