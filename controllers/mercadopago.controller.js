@@ -57,29 +57,30 @@ const {listProduct, order} = req.body;
 };
 
 const webHook = async (req, res) => {
-  console.log('Entré');
+  console.log('Entré'); 
   try {
+    const payment = req.query;
     const { orderId } = req.query; 
-    console.log('ID de la orden:', orderId);
+    console.error('Pago   ' + payment);
 
-    // Busca la orden en la base de datos utilizando el ID capturado
-    const order = await Order.findById(orderId);
-    if (!order) {
+    if (payment.type === "payment") {
+     const order = await Order.findById(orderId);
+     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-
-    // Marca la orden como pagada
     order.payed = true;
     order.status = "paid";
                 
     await order.save();
 
-    console.log('Orden marcada como pagada:', order);
+    }
 
-    res.sendStatus(204); // Envía una respuesta exitosa
+    res.sendStatus(204);
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    return res.status(500).json({ message: "Something goes wrong" });
   }
+
 }
 
 
