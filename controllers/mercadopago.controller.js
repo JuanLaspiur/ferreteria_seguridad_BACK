@@ -65,7 +65,10 @@ const webHook = async (req, res) => {
 
     if (payment.type === "payment") {
     const data = await mercadopago.payment.findById(payment["data.id"]);
-    console.error('Data importante  ' + JSON.stringify(data))
+    console.error('Data importante  ' + JSON.stringify(data.response.status))
+
+     const status =data.response.status;
+     if(status == 'approved') {
      const order = await Order.findById(orderId);
      if (!order) {
       return res.status(404).json({ message: 'Order not found' });
@@ -74,7 +77,7 @@ const webHook = async (req, res) => {
     order.status = "paid";
                 
     await order.save();
-
+  }
     }
 
     res.sendStatus(204);
