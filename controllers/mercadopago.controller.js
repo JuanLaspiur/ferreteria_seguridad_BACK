@@ -74,6 +74,8 @@ const webHook = async (req, res) => {
 
     // Marca la orden como pagada
     order.payed = true;
+    order.status = "paid";
+                
     await order.save();
 
     console.log('Orden marcada como pagada:', order);
