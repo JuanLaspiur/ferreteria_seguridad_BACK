@@ -64,6 +64,8 @@ const webHook = async (req, res) => {
     console.error('Pago   ' +JSON.stringify(payment));
 
     if (payment.type === "payment") {
+    const data = await mercadopago.payment.findById(payment["data.id"]);
+    console.error('Data importante  ' + JSON.stringify(data))
      const order = await Order.findById(orderId);
      if (!order) {
       return res.status(404).json({ message: 'Order not found' });
