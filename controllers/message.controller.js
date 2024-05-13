@@ -148,10 +148,8 @@ module.exports = {
   },
   createImageMessage: async (req, res = response) => {
     console.error('Entre ')
-
-
-
-    //lko
+    const { imageUrl  } = req.body;
+    console.error('Url de la imagen ' + imageUrl)
    /* try {
       console.error('ENTRE ')
       // Verificar si existe la carpeta, si no, crearla
