@@ -33,7 +33,17 @@ router.post(
   controller.createMessage,
 );
 
-router.post('/createImageMessage', upload.single('chat_image') ,controller.createImageMessage)
+router.post('/createImageMessage', upload.single('imageData'), (req, res) => {
+ 
+
+  if(req.body.imageData){
+    console.log('La imagen estaba en el body')
+  } 
+ if (!req.file) {
+    return res.status(400).json({ message: 'No se proporcionó ninguna imagen' });
+  }
+  res.status(200).json({ message: 'Imagen cargada exitosamente', filename: req.file.filename });
+});
 
 
 router.put(
