@@ -54,13 +54,7 @@ router.post(
 
 
 router.post('/createImageMessage', upload.single('imageData'), (req, res) => {
-  // Verificar si se subió correctamente el archivo
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se proporcionó ninguna imagen' });
-  }
-  
-  // Aquí puedes procesar los datos de la imagen como lo desees
-  console.log('Imagen recibida:', req.file.filename);
+console.log('Solo tu eres santo Señor ' + JSON.stringify(req.body.formData))
   
   // Puedes devolver una respuesta adecuada
   res.status(200).json({ message: 'Imagen guardada exitosamente', filename: req.file.filename });
