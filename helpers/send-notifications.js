@@ -1,37 +1,35 @@
-const { User } = require('../models'); 
+const { User } = require('../models');
 require('dotenv').config();
- 
- async function sendPushNotification(expoPushToken, title, body) {
-    const message = {
-      to: expoPushToken,
-      sound: "default",
-      title,
-      body,
-      data: { someData: "goes here" },
-    };
-  
-    try {
-      const response = await fetch("https://exp.host/--/api/v2/push/send", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Accept-encoding": "gzip, deflate",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
-  
-      // Manejar la respuesta si es necesario
-      console.log("Response:", response);
-    } catch (error) {
-      // Manejar el error si ocurre
-      console.error("Error sending push notification:", error);
-    }
+
+async function sendPushNotification(expoPushToken, title, body) {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title,
+    body,
+    data: { someData: "goes here" },
+  };
+
+  try {
+    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Accept-encoding": "gzip, deflate",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(message),
+    });
+
+    // Manejar la respuesta si es necesario
+    console.log("Response:", response);
+  } catch (error) {
+    // Manejar el error si ocurre
+    console.error("Error sending push notification:", error);
   }
+}
 
-
-
-export async function sendDemandNotification(location) {
+async function sendDemandNotification(location) {
   try {
     // Obtén la lista de usuarios vendedores dentro de un radio de 15 km de la ubicación
     const sellers = await User.find({
@@ -57,3 +55,8 @@ export async function sendDemandNotification(location) {
     console.error('Error al enviar las notificaciones:', error);
   }
 }
+
+module.exports = {
+  sendPushNotification,
+  sendDemandNotification
+};
