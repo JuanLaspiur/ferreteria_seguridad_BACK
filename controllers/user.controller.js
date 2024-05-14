@@ -95,6 +95,7 @@ module.exports = {
         // Agregar el atributo expoPushToken al objeto body
         body.expoPushToken = req.body.expoPushToken;
         console.error(body.expoPushToken)
+        console.error('Todo el body del new User' + JSON.stringify(body))
 
 
         const user = new User(body);
