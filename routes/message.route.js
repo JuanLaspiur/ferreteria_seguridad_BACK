@@ -2,9 +2,13 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const uploadsFiles = require('../config/multerfiles');
 const uploads = require('../config/multer');
+
+/*
 const multer = require('multer')
 const fs = require('fs');
 const path = require('path');
+
+
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -17,7 +21,7 @@ const storage = multer.diskStorage({
 });
 
 // No hay límites de tamaño especificados
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage }); */
 
 
 
@@ -49,10 +53,7 @@ router.post(
 
 
 
-router.post('/createImageMessage', upload.single('imageData'), (req, res) => {
-  // Verificar si se subió correctamente el archivo
-console.log('Entre ')
-});
+router.post('/createImageMessage', controller.createImageMessage);
 
 
 router.put(

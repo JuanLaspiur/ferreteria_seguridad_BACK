@@ -146,27 +146,38 @@ module.exports = {
         .json({ msg: "Error al obtener los mensajes del chat" });
     }
   },
-  createImageMessage: async (req, res = response) => {
+
+
+createImageMessage : async (req, res = response) => {
     try {
-      // Verificar si existe la carpeta, si no, crearla
-      const folderPath = path.join(__dirname, "assets", "imagenChat");
-      if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, { recursive: true });
+      // Verificar si se proporciona un archivo
+      if (!req.files || !req.files.image) {
+        return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
       }
   
-      // Obtener la URL de la imagen del cuerpo de la solicitud
-      const { imageUrl } = req.body;
+      // Obtener la imagen del cuerpo de la solicitud
+      const image = req.files.image;
+  
+      // Verificar si es una imagen
+      if (!image.mimetype.startsWith('image')) {
+        return res.status(400).json({ error: 'El archivo proporcionado no es una imagen válida' });
+      }
   
       // Generar un nombre de archivo único para la imagen
       const fileName = `image_${Date.now()}.webp`;
   
       // Ruta de destino para guardar la imagen
+      const folderPath = path.join(__dirname, "assets", "imagenChat");
       const imagePath = path.join(folderPath, fileName);
   
-      // Guardar la imagen en el servidor (aquí podría ser necesario descargarla primero si está en una URL remota)
-      // En este ejemplo, suponemos que imageUrl ya contiene la URL de la imagen local
-      // Si no es así, necesitarás lógica para descargarla primero
-      // Aquí puedes utilizar bibliotecas como axios para descargar la imagen si es necesario
+      // Convertir a webp si no tiene esa extensión
+      const imageBuffer = image.data;
+      const imageSharp = sharp(imageBuffer);
+      if (!image.mimetype.endsWith('webp')) {
+        await imageSharp.webp().toFile(imagePath);
+      } else {
+        await image.mv(imagePath);
+      }
   
       // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
       const newImageUri = `/assets/imagenChat/${fileName}`;
@@ -177,5 +188,6 @@ module.exports = {
       return res.status(500).json({ error: "Error interno del servidor" });
     }
   }
+  
   
 };
