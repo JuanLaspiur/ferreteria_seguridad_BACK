@@ -4,7 +4,23 @@ const uploadsFiles = require('../config/multerfiles');
 const uploads = require('../config/multer');
 const multer = require('multer')
 
-const upload = multer({dest:'assets/chatImage'});
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'assets/chatImage'); // Directorio donde se guardarán los archivos
+  },
+  filename: function (req, file, cb) {
+    // Puedes mantener el nombre original del archivo si lo deseas
+    cb(null, file.originalname);
+  }
+});
+
+// Aumenta el límite de tamaño permitido a 50 MB (en bytes)
+const limits = {
+  fileSize: 50 * 1024 * 1024 // 50 MB
+};
+
+// Crea la instancia de Multer con la configuración y límites
+const upload = multer({ storage: storage, limits: limits });
 
 
 
