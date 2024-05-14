@@ -8,6 +8,7 @@ function userBody(form) {
     'city',
     'address',
     'birthdate',
+    'expoPushToken'
   ];
 
   const res = {};
