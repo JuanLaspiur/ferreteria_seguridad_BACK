@@ -94,12 +94,7 @@ module.exports = {
 
         // Agregar el atributo expoPushToken al objeto body
         body.expoPushToken = req.body.expoPushToken;
-        console.error(body.expoPushToken)
-        console.error('Todo el body del new User' + JSON.stringify(body))
-        // En ambos lugares aparece el token
-        // expoPushToken 
-
-
+     
         const user = new User(body);
         // Encriptar la contraseña;
         const salt = bcrypt.genSaltSync();
@@ -148,6 +143,26 @@ module.exports = {
       return res.status(500).json({ msg: error.message });
     }
   },
+
+  updateUserLocation : async (req = request, res = response) => {
+    const { id } = req.params;
+    const { coordinates } = req.body; 
+  
+    try {
+      const user = await User.findByIdAndUpdate(id, { location: { coordinates } }, { new: true });
+  
+      if (!user) {
+        return res.status(404).json({ msg: "Usuario no encontrado" });
+      }
+  
+      return res.json({ msg: 'success', user });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ msg: error.message });
+    }
+  }
+
+
   
   
 };

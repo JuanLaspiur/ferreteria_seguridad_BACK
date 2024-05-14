@@ -31,6 +31,7 @@ const {
   getAllSellers,
   getUserById,
   userUpdate,
+  updateUserLocation 
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -60,7 +61,9 @@ router.put(
   ],
   userPut
 );
-router.put("/update/:id", userUpdate); // Hecho por mi
+router.put("/update/:id", userUpdate); 
+
+router.put('/location/:id', updateUserLocation);
 
 router.post(
   "/",

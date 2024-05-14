@@ -1,5 +1,6 @@
 const { response } = require('express');
 const { Demand, User, Offer } = require('../models');
+const {sendDemandNotification} = require('../helpers/send-notifications')
 require('dotenv').config();
 
 
@@ -49,7 +50,9 @@ module.exports = {
   
       const demand = new Demand(data);
       await demand.save();
-  
+
+      await sendDemandNotification (data.location);  
+
       return res.status(201).json(demand);
     } catch (error) {
       console.log(error);

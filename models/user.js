@@ -76,7 +76,11 @@ const userSchema = Schema({
   expoPushToken: {
     type:String,
     required:false
-  }
+  },
+  location: {
+    type: { type: String, default: 'Point' },
+    coordinates: { type: [Number], default: [0, 0] },
+  },
 });
 
 userSchema.methods.toJSON = function () {
