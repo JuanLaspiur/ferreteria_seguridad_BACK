@@ -73,7 +73,7 @@ const userSchema = Schema({
     type: String,
     required: false,
   },
-  ExpoPushToken: {
+  expoPushToken: {
     type:String,
     required:false
   }

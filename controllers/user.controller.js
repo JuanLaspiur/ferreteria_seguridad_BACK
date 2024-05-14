@@ -96,6 +96,8 @@ module.exports = {
         body.expoPushToken = req.body.expoPushToken;
         console.error(body.expoPushToken)
         console.error('Todo el body del new User' + JSON.stringify(body))
+        // En ambos lugares aparece el token
+        // expoPushToken 
 
 
         const user = new User(body);
