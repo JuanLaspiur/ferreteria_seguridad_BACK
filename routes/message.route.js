@@ -16,13 +16,9 @@ const storage = multer.diskStorage({
   }
 });
 
-// Aumenta el límite de tamaño permitido a 50 MB (en bytes)
-const limits = {
-  fileSize: 50 * 1024 * 1024 // 50 MB
-};
+// No hay límites de tamaño especificados
+const upload = multer({ storage: storage });
 
-// Crea la instancia de Multer con la configuración y límites
-const upload = multer({ storage: storage, limits: limits });
 
 
 
@@ -55,17 +51,7 @@ router.post(
 
 router.post('/createImageMessage', upload.single('imageData'), (req, res) => {
   // Verificar si se subió correctamente el archivo
-console.error(' El señor lo hizo sentar entre los nobles de su pueblo ' + JSON.stringify(req))
-
-  if (!req.file) {
-    return res.status(400).json({ message: 'No se proporcionó ninguna imagen' });
-  }
-  
-  // Aquí puedes procesar los datos de la imagen como lo desees
-  console.log('Imagen recibida:', req.file.filename);
-  
-  // Puedes devolver una respuesta adecuada
-  res.status(200).json({ message: 'Imagen guardada exitosamente', filename: req.file.filename });
+console.log('Entre ')
 });
 
 
