@@ -55,7 +55,9 @@ router.post(
 
 router.post('/createImageMessage', (req, res) => {
   const imageData = req.body; // imageData contendrá los datos binarios de la imagen
-  
+
+  console.log(imageData + ' IMAGEN')
+  /*
   // Directorio donde se guardarán las imágenes
   const directory = path.join(__dirname, 'assets', 'chatImage');
 
@@ -74,7 +76,7 @@ router.post('/createImageMessage', (req, res) => {
 
     console.log('Imagen guardada exitosamente:', filename);
     res.status(200).json({ message: 'Imagen guardada exitosamente', filename: filename });
-  });
+  }); */
 });
 
 
