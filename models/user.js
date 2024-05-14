@@ -73,6 +73,10 @@ const userSchema = Schema({
     type: String,
     required: false,
   },
+  ExpoPushToken: {
+    type:String,
+    required:false
+  }
 });
 
 userSchema.methods.toJSON = function () {

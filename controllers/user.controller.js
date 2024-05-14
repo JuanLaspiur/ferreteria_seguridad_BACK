@@ -68,45 +68,47 @@ module.exports = {
       return res.status(500).json({ msg: error.message });
     }
   },
-  
   userPost: async (req = request, res = response) => {
-    console.log('Entre a crear un usuario en post')
+    console.log('Entre a crear un usuario en post');
     try {
-      const body = userBody(req.body);
-      console.log('Esta es la request ' + req.body)
-      //user.email to min
-      body.email = body.email.toLowerCase();
-      const address = body.address;
-      body.addresses = [{ address }];
+        const body = userBody(req.body);
+        console.log('Esta es la request ' + req.body);
+        //user.email to min
+        body.email = body.email.toLowerCase();
+        const address = body.address;
+        body.addresses = [{ address }];
 
-      const file =
-        req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
+        const file =
+            req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
 
-      if (file) {
-        let images = '';
-        const image = await cloudinary.uploader.upload(file.path, {
-          folder: 'avatars',
-        });
+        if (file) {
+            let images = '';
+            const image = await cloudinary.uploader.upload(file.path, {
+                folder: 'avatars',
+            });
 
-        images = image.secure_url;
+            images = image.secure_url;
 
-        body.avatar = images;
-      }
+            body.avatar = images;
+        }
 
-      const user = new User(body);
-      // Encriptar la contraseña;
-      const salt = bcrypt.genSaltSync();
-      user.password = bcrypt.hashSync(req.body.password, salt);
+        // Agregar el atributo expoPushToken al objeto body
+        body.expoPushToken = req.body.expoPushToken;
 
-      await user.save();
-      return res.json({ msg: 'success', user });
+        const user = new User(body);
+        // Encriptar la contraseña;
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(req.body.password, salt);
+
+        await user.save();
+        return res.json({ msg: 'success', user });
     } catch (error) {
-      console.log(error);
-      return res
-        .status(400)
-        .json({ msg: `A ocurrido un error: ${error.message}` });
+        console.log(error);
+        return res
+            .status(400)
+            .json({ msg: `A ocurrido un error: ${error.message}` });
     }
-  },
+},
   userDelete: async (req = request, res = response) => {
     const { id } = req.params;
 
