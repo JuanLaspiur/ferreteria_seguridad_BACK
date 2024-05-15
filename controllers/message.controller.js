@@ -4,6 +4,8 @@ const { handleUpload } = require("../config/cloudinary");
 const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
+const { validationResult } = require('express-validator');
+
 
 module.exports = {
   createMessage: async (req, res = response) => {
@@ -147,45 +149,37 @@ module.exports = {
     }
   },
 
-
-createImageMessage : async (req, res = response) => {
+createImageMessage: async (req, res) => {
     try {
-      // Verificar si se proporciona un archivo
-      if (!req.files || !req.files.image) {
+      // Verificar si se proporciona el dato de la imagen
+      if (!req.body || !req.body.imageData) {
         return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
       }
   
-      // Obtener la imagen del cuerpo de la solicitud
-      const image = req.files.image;
+      // Obtener los datos de la imagen en base64
+      const imageData = req.body.imageData;
   
-      // Verificar si es una imagen
-      if (!image.mimetype.startsWith('image')) {
-        return res.status(400).json({ error: 'El archivo proporcionado no es una imagen válida' });
-      }
+      // Convertir los datos base64 en un buffer de imagen
+      const imageBuffer = Buffer.from(imageData, 'base64');
   
       // Generar un nombre de archivo único para la imagen
       const fileName = `image_${Date.now()}.webp`;
   
       // Ruta de destino para guardar la imagen
-      const folderPath = path.join(__dirname, "assets", "imagenChat");
+      const folderPath = path.join(__dirname, 'assets', 'imagenChat');
       const imagePath = path.join(folderPath, fileName);
   
-      // Convertir a webp si no tiene esa extensión
-      const imageBuffer = image.data;
+      // Convertir la imagen a formato webp
       const imageSharp = sharp(imageBuffer);
-      if (!image.mimetype.endsWith('webp')) {
-        await imageSharp.webp().toFile(imagePath);
-      } else {
-        await image.mv(imagePath);
-      }
+      await imageSharp.webp().toFile(imagePath);
   
       // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
       const newImageUri = `/assets/imagenChat/${fileName}`;
   
       return res.status(201).json({ uri: newImageUri });
     } catch (error) {
-      console.error("Error al guardar la imagen:", error);
-      return res.status(500).json({ error: "Error interno del servidor" });
+      console.error('Error al guardar la imagen:', error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
     }
   }
   
