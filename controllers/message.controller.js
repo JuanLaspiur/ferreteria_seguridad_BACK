@@ -19,11 +19,10 @@ module.exports = {
 
  // Determine the recipient opposite to the sender to send message notification
     if (sender === chatFound.buyer) {
-      sendMessageNotification(chatFound.seller, 'Mensaje recivido ', text);
+      sendMessageNotification(chatFound.seller._id, 'Mensaje recivido ', text);
     } else  {
-      sendMessageNotification(chatFound.buyer, 'Mensaje recivido ', text);
+      sendMessageNotification(chatFound.buyer._id, 'Mensaje recivido ', text);
     } 
-
 
     let cldRes = null;
 

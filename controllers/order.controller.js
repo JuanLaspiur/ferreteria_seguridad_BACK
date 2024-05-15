@@ -1,5 +1,6 @@
 const { response } = require('express');
 const { Order, Chat, Offer } = require('../models');
+const {sendMessageNotification} = require('../helpers/send-notifications')
 
 module.exports = {
   createOrder: async (req, res = response) => {
@@ -25,6 +26,9 @@ module.exports = {
 
     const order = new Order(data);
     await order.save();
+
+     //   message notification to buyer
+     sendMessageNotification(buyerID, 'Orden recibida', 'Búscala en la bandeja de notificaciones');
 
     return res.status(201).json(order);
   },

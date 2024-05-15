@@ -1,5 +1,7 @@
 const { response } = require('express');
 const { Offer, Demand, Chat } = require('../models');
+const {sendMessageNotification} = require('../helpers/send-notifications')
+
 module.exports = {
   createOffer : async (req, res = response) => {
     const { seller, demand, products, delivery } = req.body;
@@ -10,6 +12,9 @@ module.exports = {
       if (!demandFound) {
         return res.status(404).json({ msg: 'Demand not found' });
       }
+
+      //  to send message notification
+      sendMessageNotification( demandFound.user._id, 'Oferta recivida ', 'Has recivido una oferta a tu demanda');
   
       const total = products.reduce((acc, product) => {
         return acc + (product.price * product.quantity);
