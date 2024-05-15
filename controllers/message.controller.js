@@ -149,9 +149,9 @@ module.exports = {
     }
   },
 
-createImageMessage: async (req, res) => {
+   createImageMessage : async (req, res) => {
     try {
-      // Verificar si se proporciona el dato de la imagen
+      // Verificar si se proporcionó el dato de la imagen
       if (!req.body || !req.body.imageData) {
         return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
       }
@@ -166,7 +166,7 @@ createImageMessage: async (req, res) => {
       const fileName = `image_${Date.now()}.webp`;
   
       // Ruta de destino para guardar la imagen
-      const folderPath = path.join(__dirname, 'assets', 'imagenChat');
+      const folderPath = path.join(__dirname, '..', 'assets', 'chatImage');
       const imagePath = path.join(folderPath, fileName);
   
       // Convertir la imagen a formato webp
@@ -174,14 +174,16 @@ createImageMessage: async (req, res) => {
       await imageSharp.webp().toFile(imagePath);
   
       // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
-      const newImageUri = `/assets/imagenChat/${fileName}`;
+      const newImageUri = `/assets/chatImage/${fileName}`;
   
       return res.status(201).json({ uri: newImageUri });
     } catch (error) {
       console.error('Error al guardar la imagen:', error);
-      return res.status(500).json({ error: 'Error interno del servidor' });
+      return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
     }
   }
+  
+  
   
   
 };
