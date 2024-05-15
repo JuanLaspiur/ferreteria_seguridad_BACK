@@ -56,7 +56,26 @@ async function sendDemandNotification(location) {
   }
 }
 
+
+async function sendMessageNotification(recipientId, title, body) {
+  try {
+    const recipient = await User.findById(recipientId);
+    if (!recipient || !recipient.expoPushToken) {
+      console.error('Usuario no encontrado o expoPushToken no disponible');
+      return;
+    }
+
+    // Envía la notificación push al expoPushToken del destinatario
+    await sendPushNotification(recipient.expoPushToken, title, body);
+    console.log('Notificación enviada con éxito al usuario:', recipientId);
+  } catch (error) {
+    console.error('Error al enviar la notificación push:', error);
+  }
+}
+
+
 module.exports = {
   sendPushNotification,
-  sendDemandNotification
+  sendDemandNotification,
+  sendMessageNotification
 };

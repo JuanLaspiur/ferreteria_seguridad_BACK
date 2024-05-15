@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 const { validationResult } = require('express-validator');
+const {sendMessageNotification} = require('../helpers/send-notifications')
 
 
 module.exports = {
@@ -13,26 +14,35 @@ module.exports = {
 
     const chatFound = await Chat.findById(chat);
     if (!chatFound) {
-      return res.status(400).json({ msg: "No existe el chat" });
+        return res.status(400).json({ msg: "No existe el chat" });
     }
+
+ // Determine the recipient opposite to the sender to send message notification
+    if (sender === chatFound.buyer) {
+      sendMessageNotification(chatFound.seller, 'Mensaje recivido ', text);
+    } else  {
+      sendMessageNotification(chatFound.buyer, 'Mensaje recivido ', text);
+    } 
+
+
     let cldRes = null;
 
     if (req.file) {
-      const b64 = Buffer.from(req.file.buffer).toString("base64");
-      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
-      cldRes = await handleUpload(dataURI);
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+        cldRes = await handleUpload(dataURI);
     }
+
+    let docsURL = null;
     if (cldRes) {
-      // req.body.avatar = cldRes.secure_url;
-      // return res.json(cldRes.secure_url);
-      docs = cldRes.secure_url;
+        docsURL = cldRes.secure_url;
     }
 
     const data = {
-      chat,
-      text,
-      sender,
-      docs,
+        chat,
+        text,
+        sender,
+        docs: docsURL,
     };
 
     const message = new Message(data);
@@ -41,7 +51,8 @@ module.exports = {
     await chatFound.save();
 
     return res.status(201).json(message);
-  },
+}
+,
   getMessages: async (req, res = response) => {
     const { limit = 5, skip = 0 } = req.query;
     try {
@@ -181,9 +192,30 @@ module.exports = {
       console.error('Error al guardar la imagen:', error);
       return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
     }
+  },
+   getImageBase64FromFile : async (req, res) => {
+      try {
+          // Verificar si se proporcionó la ruta de la imagen
+          const imagePath = req.body.imagePath;
+          if (!imagePath) {
+              return res.status(400).json({ error: 'No se proporcionó ninguna ruta de imagen' });
+          }
+  
+          // Construir la ruta absoluta del archivo dentro del directorio del proyecto
+          const absoluteImagePath = path.join(__dirname, '..', imagePath);
+  
+          // Leer el archivo de la ruta proporcionada
+          const imageData = fs.readFileSync(absoluteImagePath);
+  
+          // Convertir los datos de la imagen a base64
+          const base64Image = Buffer.from(imageData).toString('base64');
+  
+          return res.status(200).json({ imageData: base64Image });
+      } catch (error) {
+          console.error('Error al obtener la imagen:', error);
+          return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
+      }
   }
   
-  
-  
-  
+
 };
