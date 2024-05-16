@@ -41,7 +41,7 @@ module.exports = {
         chat,
         text,
         sender,
-        docs: docsURL,
+        docs,
     };
 
     const message = new Message(data);
@@ -192,7 +192,7 @@ module.exports = {
       return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
     }
   },
-   getImageBase64FromFile : async (req, res) => {
+ /* getImageBase64FromFile : async (req, res) => {
       try {
           // Verificar si se proporcionó la ruta de la imagen
           const imagePath = req.body.imagePath;
@@ -214,7 +214,37 @@ module.exports = {
           console.error('Error al obtener la imagen:', error);
           return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
       }
-  }
+  }, */
+  
+  getImageBase64FromFile: async (req, res) => {
+    try {
+        // Verificar si se proporcionó la ruta de la imagen
+        let queryInfo = req.params.imagePath;
+        
+        if (!queryInfo ) {
+            return res.status(400).json({ error: 'No se proporcionó ninguna ruta de imagen' });
+        }
+        const imagePath = queryInfo.replace(/-/g, "/");
+        // Construir la ruta absoluta del archivo dentro del directorio del proyecto
+        const absoluteImagePath = path.join(__dirname, '..', imagePath);
+
+        // Verificar si el archivo existe
+        if (!fs.existsSync(absoluteImagePath)) {
+            return res.status(404).json({ error: 'El archivo de imagen no se encontró' });
+        }
+
+        // Establecer el tipo de contenido en la respuesta
+        res.setHeader('Content-Type', 'image/webp');
+
+        // Leer y enviar el archivo de imagen directamente
+        fs.createReadStream(absoluteImagePath).pipe(res);
+    } catch (error) {
+        console.error('Error al obtener la imagen:', error);
+        return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
+    }
+} 
+
+
   
 
 };
