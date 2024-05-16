@@ -12,15 +12,13 @@ const path = require('path');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'assets/chatImage'); // Directorio donde se guardarán los archivos
+    cb(null, 'assets/chatImage'); 
   },
   filename: function (req, file, cb) {
-    // Puedes mantener el nombre original del archivo si lo deseas
     cb(null, file.originalname);
   }
 });
 
-// No hay límites de tamaño especificados
 const upload = multer({ storage: storage }); 
 
 
