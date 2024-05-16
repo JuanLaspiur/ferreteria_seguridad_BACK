@@ -159,84 +159,52 @@ module.exports = {
     }
   },
 
-   createImageMessage : async (req, res) => {
+  createImageMessage: async (req, res) => {
     try {
-      // Verificar si se proporcionó el dato de la imagen
       if (!req.body || !req.body.imageData) {
-        return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
-      }
-  
-      // Obtener los datos de la imagen en base64
+        return res.status(400).json({ error: 'No image provided' });
+      }  
+      // Get image data in base64 format
       const imageData = req.body.imageData;
   
-      // Convertir los datos base64 en un buffer de imagen
       const imageBuffer = Buffer.from(imageData, 'base64');
   
-      // Generar un nombre de archivo único para la imagen
+      // Generate a unique filename for the image
       const fileName = `image_${Date.now()}.webp`;
   
-      // Ruta de destino para guardar la imagen
+      // Destination path to save the image
       const folderPath = path.join(__dirname, '..', 'assets', 'chatImage');
       const imagePath = path.join(folderPath, fileName);
   
-      // Convertir la imagen a formato webp
+      // Convert the image to webp format
       const imageSharp = sharp(imageBuffer);
       await imageSharp.webp().toFile(imagePath);
   
-      // Construir la nueva URI de la imagen basada en la ubicación donde se guardó
       const newImageUri = `/assets/chatImage/${fileName}`;
   
       return res.status(201).json({ uri: newImageUri });
     } catch (error) {
-      console.error('Error al guardar la imagen:', error);
-      return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
+      console.error('Error saving image:', error);
+      return res.status(500).json({ error: 'Internal Server Error', message: error.message });
     }
-  },
- /* getImageBase64FromFile : async (req, res) => {
-      try {
-          // Verificar si se proporcionó la ruta de la imagen
-          const imagePath = req.body.imagePath;
-          if (!imagePath) {
-              return res.status(400).json({ error: 'No se proporcionó ninguna ruta de imagen' });
-          }
-  
-          // Construir la ruta absoluta del archivo dentro del directorio del proyecto
-          const absoluteImagePath = path.join(__dirname, '..', imagePath);
-  
-          // Leer el archivo de la ruta proporcionada
-          const imageData = fs.readFileSync(absoluteImagePath);
-  
-          // Convertir los datos de la imagen a base64
-          const base64Image = Buffer.from(imageData).toString('base64');
-  
-          return res.status(200).json({ imageData: base64Image });
-      } catch (error) {
-          console.error('Error al obtener la imagen:', error);
-          return res.status(500).json({ error: 'Error interno del servidor', message: error.message });
-      }
-  }, */
-  
-  getImageBase64FromFile: async (req, res) => {
+  }
+  , 
+  getImageMessage: async (req, res) => {
     try {
-        // Verificar si se proporcionó la ruta de la imagen
         let queryInfo = req.params.imagePath;
         
         if (!queryInfo ) {
             return res.status(400).json({ error: 'No se proporcionó ninguna ruta de imagen' });
         }
+        // Replace "-" with "/" in the URI.
         const imagePath = queryInfo.replace(/-/g, "/");
-        // Construir la ruta absoluta del archivo dentro del directorio del proyecto
         const absoluteImagePath = path.join(__dirname, '..', imagePath);
 
-        // Verificar si el archivo existe
         if (!fs.existsSync(absoluteImagePath)) {
             return res.status(404).json({ error: 'El archivo de imagen no se encontró' });
         }
 
-        // Establecer el tipo de contenido en la respuesta
         res.setHeader('Content-Type', 'image/webp');
-
-        // Leer y enviar el archivo de imagen directamente
         fs.createReadStream(absoluteImagePath).pipe(res);
     } catch (error) {
         console.error('Error al obtener la imagen:', error);

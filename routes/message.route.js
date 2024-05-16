@@ -32,7 +32,7 @@ const { validateJWT, validateFields, isAdminRole } = require('../middlewares');
 const { message: controller } = require('../controllers');
 
 const router = Router();
-router.get('/getImageBase64FromURL/:imagePath', controller.getImageBase64FromFile);
+router.get('/getImageMessage/:imagePath', controller.getImageMessage);
 router.get('/', validateJWT, controller.getMessages);
 
 router.get('/:id', validateJWT, controller.getMessage);
