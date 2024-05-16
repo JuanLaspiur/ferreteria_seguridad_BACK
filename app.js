@@ -7,6 +7,8 @@ const { Chat, Demand, User, Message } = require('./models');
 const port = process.env.PORT || 8080;
 const Routes = require('./routes/index');
 const { conn } = require('./db/config');
+const {sendMessageNotification} = require('./helpers/send-notifications') 
+
 
 conn();
 const app = express();
@@ -45,31 +47,19 @@ io.on('connection', (socket) => {
   socket.on('typing', (room) => socket.in(room).emit('typing'));
   socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
- /* socket.on('new message', async (newMessageRecieved) => {
-    //console.log(newMessageRecieved);
-    var chatId = newMessageRecieved.chat;
-     var sender = newMessageRecieved.sender;
-     const chat = await Chat.findById(chatId);
-    //console.log(chat);
-
-     if (sender == chat.seller) {
-       socket.in(chat.buyer).emit('message recieved', newMessageRecieved);
-     } else {
-       socket.in(chat.seller).emit('message recieved', newMessageRecieved);
-     }
-    socket.to(chatId).emit('message recieved', newMessageRecieved);
-  }); */
 
   socket.on('new message', async (newMessageRecieved) => {
+    console.log(JSON.stringify(newMessageRecieved))
     try {
-      const { sender, chat, text} = newMessageRecieved;
-  
-      const newMessage = new Message({
-        sender,
+      const { sender, chat, text, docs} = newMessageRecieved;
+      const data = {
         chat,
-        text,        
-      });
-  
+        text,
+        sender,
+        docs,
+    };
+
+      const newMessage = new Message(data);
       // Guardar el nuevo mensaje en la base de datos
       await newMessage.save();
   
@@ -78,6 +68,14 @@ io.on('connection', (socket) => {
   
       // Obtener la lista de mensajes actualizada del chat
       const updatedChat = await Chat.findById(chat).populate('messages');
+
+ // Determine the recipient opposite to the sender to send message notification
+ if (sender === updatedChat.buyer) {
+  sendMessageNotification(updatedChat.seller._id, 'Mensaje recivido ', text);
+} else  {
+  sendMessageNotification(updatedChat.buyer._id, 'Mensaje recivido ', text);
+} 
+
   
       // Emitir un evento para indicar que se ha recibido un nuevo mensaje
       socket.emit('message received', 
@@ -87,6 +85,8 @@ io.on('connection', (socket) => {
       console.error('Error al crear y enviar el mensaje:', error);
     }
   });
+
+
   
 
   socket.on('new demand', async (newDemandRecieved) => {

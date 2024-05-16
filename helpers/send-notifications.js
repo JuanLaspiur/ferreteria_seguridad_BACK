@@ -67,7 +67,6 @@ async function sendMessageNotification(recipientId, title, body) {
 
     // Envía la notificación push al expoPushToken del destinatario
     await sendPushNotification(recipient.expoPushToken, title, body);
-    console.log('Notificación enviada con éxito al usuario:', recipientId);
   } catch (error) {
     console.error('Error al enviar la notificación push:', error);
   }
