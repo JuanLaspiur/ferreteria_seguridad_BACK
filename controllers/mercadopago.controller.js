@@ -67,7 +67,7 @@ const webHook = async (req, res) => {
         const message = new Message({
           sender: order.buyer._id, // Ajusta según tu modelo de datos
           chat: order.chat._id,
-          text: `CHUM le informa que el cliente  ha efectuado el pago de $${order.total} para su compra mediante la plataforma de MercadoPago con éxito.\nfecha: ${formattedDate}\n\nnro de orden: ${order._id}
+          text: `CHUM le informa que el cliente  ha efectuado el pago de $${order.total} para su compra mediante la plataforma de MercadoPago con éxito.\n\nfecha: ${formattedDate}\nnro de orden: ${order._id}
            `
         });
         await message.save();
