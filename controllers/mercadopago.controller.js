@@ -2,7 +2,7 @@ const mercadopago = require('mercadopago');
 require('dotenv').config();
 const { Order} = require('../models');
 const Message = require('../models/message')
-
+const {sendMessageNotification} = require('../helpers/send-notifications')
 
 
 mercadopago.configure({
@@ -70,9 +70,11 @@ const webHook = async (req, res) => {
           text: `CHUM le informa que el cliente  ha efectuado el pago de $${order.total} para su compra mediante la plataforma de MercadoPago con éxito. \n
           \n \n \nfecha: ${formattedDate}\n\nnro de orden: ${order._id} \n
            `
-
         });
         await message.save();
+
+        sendMessageNotification(order.seller._id, 'Orden pagada ', `nro de orden: ${order._id}`);
+
       }
     }
 
