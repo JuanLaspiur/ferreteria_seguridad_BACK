@@ -1,32 +1,14 @@
 const mercadopago = require('mercadopago');
 require('dotenv').config();
 const { Order} = require('../models');
+const Message = require('../models/message')
+
+
 
 mercadopago.configure({
   access_token: `${process.env.MPAGO_TOKEN}`
 });
-/*
- const createOrderMERCADOPAGO = async (req, res) => {
-  try { 
-    const { user, name, category, price, quantity } = req.body;
-    const result = await mercadopago.preferences.create({
-        items: [
-            {
-                id: user,
-                description: category ,
-                title: name,
-                unit_price:price,
-                currency_id: "CLP",
-                quantity:quantity,
-            },
-        ]
-    });
-    res.json({"url":result.body.init_point});
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Something goes wrong" });
-  }
-}; */
+
 const createOrderMERCADOPAGO = async (req, res) => {
 
 const {listProduct, order} = req.body;
@@ -61,23 +43,40 @@ const webHook = async (req, res) => {
   try {
     const payment = req.query;
     const { orderId } = req.query; 
-    console.error('Pago   ' +JSON.stringify(payment));
+    console.error('Pago   ' + JSON.stringify(payment));
 
     if (payment.type === "payment") {
-    const data = await mercadopago.payment.findById(payment["data.id"]);
-    console.error('Data importante  ' + JSON.stringify(data.response.status))
+      const data = await mercadopago.payment.findById(payment["data.id"]);
+      console.error('Data importante  ' + JSON.stringify(data.response.status));
 
-     const status =data.response.status;
-     if(status == 'approved') {
-     const order = await Order.findById(orderId);
-     if (!order) {
-      return res.status(404).json({ message: 'Order not found' });
-    }
-    order.payed = true;
-    order.status = "paid";
-                
-    await order.save();
-  }
+      const status = data.response.status;
+      if (status == 'approved') {
+        const order = await Order.findById(orderId);
+        if (!order) {
+          return res.status(404).json({ message: 'Order not found' });
+        }
+        order.payed = true;
+        order.status = "paid";
+        await order.save();
+
+        const currentDate = new Date();
+        const formattedDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()} ${currentDate.getHours()}:${currentDate.getMinutes()}:${currentDate.getSeconds()}`;
+
+
+        // Envío del mensaje
+        const message = new Message({
+          sender: order.buyer._id, // Ajusta según tu modelo de datos
+          chat: order.chat._id,
+          text: `CHUM le informa que ${order.buyer.name} ${order.buyer.lastname} ha efectuado el pago de $${order.total} para su compra
+          mediante la plataforma de MercadoPago con éxito. \n
+          \n \n \n
+          fecha: ${formattedDate}  \n \n
+          nro de orden: ${order._id} \n
+           `
+
+        });
+        await message.save();
+      }
     }
 
     res.sendStatus(204);
@@ -85,7 +84,6 @@ const webHook = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Something goes wrong" });
   }
-
 }
 
 
