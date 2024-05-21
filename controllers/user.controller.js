@@ -3,7 +3,11 @@ const { response, request } = require('express');
 const User = require('../models/user');
 const { userBody } = require('../helpers/parse-bodys');
 const cloudinary = require('../config/cloudinary.js');
+const {generateExpoPushToken} = require('../helpers/ExpoPushToken.js')
+const { Expo } = require('expo-server-sdk');
 
+// Crea una instancia de Expo
+const expo = new Expo();
 module.exports = {
   userGet: async (req = request, res = response) => {
     const { limit = 5, skip = 0 } = req.query;
@@ -68,18 +72,18 @@ module.exports = {
       return res.status(500).json({ msg: error.message });
     }
   },
-  userPost: async (req = request, res = response) => {
+// Controlador para crear un nuevo usuario
+userPost: async (req = request, res = response) => {
     console.log('Entre a crear un usuario en post');
     try {
         const body = userBody(req.body);
         console.log('Esta es la request ' + req.body);
-        //user.email to min
+        // Convierte el email a minúsculas
         body.email = body.email.toLowerCase();
         const address = body.address;
         body.addresses = [{ address }];
 
-        const file =
-            req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
+        const file = req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
 
         if (file) {
             let images = '';
@@ -92,23 +96,33 @@ module.exports = {
             body.avatar = images;
         }
 
-        // Agregar el atributo expoPushToken al objeto body
-        body.expoPushToken = req.body.expoPushToken;
-     
+        // Obtén el token de notificación push de Expo
+        let expoPushToken = req.body.expoPushToken;
+        if (!expoPushToken || !Expo.isExpoPushToken(expoPushToken)) {
+            // Si el token es inválido o no está presente, genera uno nuevo
+            expoPushToken = await generateExpoPushToken();
+        }
+
+        // Agrega el atributo expoPushToken al objeto body
+        body.expoPushToken = expoPushToken;
+
+        // Crea un nuevo usuario
         const user = new User(body);
-        // Encriptar la contraseña;
+        
+        // Encripta la contraseña
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(req.body.password, salt);
 
+        // Guarda el usuario en la base de datos
         await user.save();
+
         return res.json({ msg: 'success', user });
     } catch (error) {
         console.log(error);
-        return res
-            .status(400)
-            .json({ msg: `A ocurrido un error: ${error.message}` });
+        return res.status(400).json({ msg: `A ocurrido un error: ${error.message}` });
     }
-},
+}
+,
   userDelete: async (req = request, res = response) => {
     const { id } = req.params;
 

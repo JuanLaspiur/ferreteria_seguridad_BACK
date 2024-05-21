@@ -5,45 +5,52 @@ const bcrypt = require('bcryptjs');
 const { googleVerify } = require('../helpers/google-verify');
 const { handleUpload } = require('../config/cloudinary');
 const { sendMailAsync } = require('../helpers/generate-invitation');
+const { generateExpoPushToken, isValidExpoPushToken } = require('./../helpers/ExpoPushToken'); // Importa la función para generar el token
+
 
 module.exports = {
-  login : async (req, res) => {
+  login: async (req, res) => {
     const { email, password, expoPushToken } = req.body;
     try {
-        const user = await User.findOne({ email: email.toLowerCase() });
-
-        if (!user) {
-            return res.status(400).json({
-                msg: 'Usuario no encontrado',
-            });
-        }
-
-        const match = bcrypt.compareSync(password, user.password);
-        if (!match) {
-            return res.status(400).json({
-                msg: 'Contraseña incorrecta',
-            });
-        }
-
-        // Verificar si el expoPushToken es diferente y actualizarlo si es necesario
-        if (expoPushToken && expoPushToken !== user.expoPushToken) {
-            user.expoPushToken = expoPushToken;
-            await user.save();
-        }
-
-        const token = await generateJWT(user._id);
-
-        return res.json({
-            user,
-            token,
+      const user = await User.findOne({ email: email.toLowerCase() });
+  
+      if (!user) {
+        return res.status(400).json({
+          msg: 'Usuario no encontrado',
         });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            msg: `Ha ocurrido un error: ${error.message}`,
+      }
+  
+      const match = bcrypt.compareSync(password, user.password);
+      if (!match) {
+        return res.status(400).json({
+          msg: 'Contraseña incorrecta',
         });
+      }
+
+      if (expoPushToken && expoPushToken !== user.expoPushToken) {
+        user.expoPushToken = expoPushToken;
+        await user.save();
     }
-},
+      // Verificar si el token de ExpoPushToken es válido
+      if (!isValidExpoPushToken(user.expoPushToken)) {
+        // Si el token no es válido, crear uno nuevo
+        user.expoPushToken = await generateExpoPushToken();
+        await user.save();
+      }
+  
+      const token = await generateJWT(user._id);
+  
+      return res.json({
+        user,
+        token,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+        msg: `Ha ocurrido un error: ${error.message}`,
+      });
+    }
+  },
   googleSignIn: async (req = request, res = response) => {
     const { id_token } = req.body;
 
