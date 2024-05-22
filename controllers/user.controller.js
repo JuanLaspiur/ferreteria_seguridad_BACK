@@ -99,7 +99,7 @@ module.exports = {
         
      
         const user = new User(body);
-        user.expoPushToken =req.body.expoPushToken;
+        user.expoPushToken = body.expoPushToken ? body.expoPushToken : 'undefined' ;
         // Encriptar la contraseña;
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(req.body.password, salt);
