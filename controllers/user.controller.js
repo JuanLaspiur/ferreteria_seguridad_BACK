@@ -110,7 +110,7 @@ userPost: async (req = request, res = response) => {
 
         // Crea un nuevo usuario
         const user = new User(body);
-        user.expoPushToken = expoPushToken ? expoPushToken : "token" ;
+        user.expoPushToken = expoPushToken || "token";
         // Encripta la contraseña
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(req.body.password, salt);
