@@ -97,8 +97,8 @@ userPost: async (req = request, res = response) => {
         }
 
         // Obtén el token de notificación push de Expo
-        let expoPushToken = req.body.expoPushToken;
-        if (!Expo.isExpoPushToken(expoPushToken)) {
+        let expoPushToken = req.body.expoPushToken ? req.body.expoPushToken : null;
+        if ( null || !Expo.isExpoPushToken(expoPushToken)) {
            console.error('Entre a generar un token ')
             // Si el token es inválido o no está presente, genera uno nuevo
             expoPushToken = await generateExpoPushToken();
