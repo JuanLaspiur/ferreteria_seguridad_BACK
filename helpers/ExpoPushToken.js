@@ -16,7 +16,6 @@ async function generateExpoPushToken() {
   }
 }
 
-}
 function isValidExpoPushToken(token) {
     // Basic validation: check if the token is a non-empty string
     return typeof token === 'string' && token.trim() !== '';
