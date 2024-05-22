@@ -5,6 +5,12 @@ const bcrypt = require('bcryptjs');
 const { googleVerify } = require('../helpers/google-verify');
 const { handleUpload } = require('../config/cloudinary');
 const { sendMailAsync } = require('../helpers/generate-invitation');
+const {generateExpoPushToken} = require('../helpers/ExpoPushToken.js')
+const { Expo } = require('expo-server-sdk');
+
+// Crea una instancia de Expo
+const expo = new Expo();
+
 
 module.exports = {
   login : async (req, res) => {
@@ -27,9 +33,18 @@ module.exports = {
 
         // Verificar si el expoPushToken es diferente y actualizarlo si es necesario
         if (expoPushToken && expoPushToken !== user.expoPushToken) {
-            user.expoPushToken = expoPushToken;
-            await user.save();
+            c.expoPushToken = expoPushToken;
+          
         }
+
+        if (!Expo.isExpoPushToken(user.expoPushToken)) {
+          console.error('Entre a generar un token ')
+           // Si el token es inválido o no está presente, genera uno nuevo
+           user.expoPushToken = await generateExpoPushToken();
+
+       }
+
+  await user.save();
 
         const token = await generateJWT(user._id);
 
