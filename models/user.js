@@ -75,6 +75,7 @@ const userSchema = Schema({
   },
   expoPushToken: {
     type:String,
+    default:"defual",
     required:false
   },
   location: {

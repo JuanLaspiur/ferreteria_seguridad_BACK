@@ -10,6 +10,8 @@ async function generateExpoPushToken() {
     const expoPushToken = await expo.getDevicePushTokenAsync({
       deviceId: Expo.random.getPushToken(),
     });
+    console.log('TOKEN GENERADO ' + JSON.stringify(expoPushToken))
+    console.error('TOKEN GENERADO ' + JSON.stringify(expoPushToken))
 
     return expoPushToken.data; // Devuelve el nuevo token generado
   } catch (error) {
