@@ -72,7 +72,53 @@ module.exports = {
       return res.status(500).json({ msg: error.message });
     }
   },
+  userPost: async (req = request, res = response) => {
+    console.log('Entre a crear un usuario en post');
+    try {
+        const body = userBody(req.body);
+        console.log('Esta es la request ' + req.body);
+        //user.email to min
+        body.email = body.email.toLowerCase();
+        const address = body.address;
+        body.addresses = [{ address }];
+
+        const file =
+            req.files && req.files['avatar'] ? req.files['avatar'][0] : null;
+
+        if (file) {
+            let images = '';
+            const image = await cloudinary.uploader.upload(file.path, {
+                folder: 'avatars',
+            });
+
+            images = image.secure_url;
+
+            body.avatar = images;
+        }
+        const  expoPushToken = await generateExpoPushToken();
+        // Agregar el atributo expoPushToken al objeto body
+       // body.expoPushToken = req.body.expoPushToken;
+     
+        const user = new User(body);
+        // Encriptar la contraseña;
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(req.body.password, salt);
+        user.expoPushToken = expoPushToken;
+
+
+        await user.save();
+        return res.json({ msg: 'success', user });
+    } catch (error) {
+        console.log(error);
+        return res
+            .status(400)
+            .json({ msg: `A ocurrido un error: ${error.message}` });
+    }
+}
+
+
 // Controlador para crear un nuevo usuario
+/*
 userPost: async (req = request, res = response) => {
     console.log('Entre a crear un usuario en post');
     try {
@@ -95,14 +141,14 @@ userPost: async (req = request, res = response) => {
 
             body.avatar = images;
         }
-/*
+
         // Obtén el token de notificación push de Expo
         let expoPushToken = req.body.expoPushToken ? req.body.expoPushToken : null;
         if ( !expoPushToken || !Expo.isExpoPushToken(expoPushToken)) {
            console.error('Entre a generar un token ')
             // Si el token es inválido o no está presente, genera uno nuevo
             expoPushToken = await generateExpoPushToken();
-        } */
+        } 
         const  expoPushToken = await generateExpoPushToken();
 
         console.error("TOKEN DESDE EL USER " + expoPushToken)
@@ -123,7 +169,7 @@ userPost: async (req = request, res = response) => {
         console.log(error);
         return res.status(400).json({ msg: `A ocurrido un error: ${error.message}` });
     }
-}
+} */
 ,
   userDelete: async (req = request, res = response) => {
     const { id } = req.params;
