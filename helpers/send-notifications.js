@@ -38,7 +38,7 @@ async function sendDemandNotification(location) {
         $near: {
           $geometry: {
             type: 'Point',
-            coordinates: [parseFloat(location.coordinates[1]), parseFloat(location.coordinates[0])], // Revisa el orden de las coordenadas si es necesario
+            coordinates: [parseFloat(location.coordinates[0]), parseFloat(location.coordinates[1])], // Revisa el orden de las coordenadas si es necesario
           },
           $maxDistance: process.env.SEARCH_RADIUS || 15000, // 15 km en metros
         },
