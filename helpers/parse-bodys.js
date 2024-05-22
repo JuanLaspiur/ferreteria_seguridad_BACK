@@ -7,7 +7,7 @@ function userBody(form) {
     'phone',
     'city',
     'address',
-    'birthdate'
+    'birthdate',
   ];
 
   const res = {};

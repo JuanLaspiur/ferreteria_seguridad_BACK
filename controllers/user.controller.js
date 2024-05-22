@@ -97,9 +97,9 @@ module.exports = {
         }
         // Agregar el atributo expoPushToken al objeto body const  expoPushToken = await generateExpoPushToken();
         
-         body.expoPushToken = req.body.expoPushToken;
      
         const user = new User(body);
+        user.expoPushToken =req.body.expoPushToken;
         // Encriptar la contraseña;
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(req.body.password, salt);
