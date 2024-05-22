@@ -7,17 +7,15 @@ const expo = new Expo();
 async function generateExpoPushToken() {
   try {
     // Genera un nuevo token de notificación push
-    const expoPushToken = await expo.getDevicePushTokenAsync({
-      deviceId: Expo.random.getPushToken(),
-    });
+    const expoPushToken = await expo.generatePushTokenAsync();
     console.log('TOKEN GENERADO ' + JSON.stringify(expoPushToken))
-    console.error('TOKEN GENERADO ' + JSON.stringify(expoPushToken))
-
-    return expoPushToken.data; // Devuelve el nuevo token generado
+    return expoPushToken; // Devuelve el nuevo token generado
   } catch (error) {
     console.error('Error generating Expo Push Token:', error);
     throw error;
   }
+}
+
 }
 function isValidExpoPushToken(token) {
     // Basic validation: check if the token is a non-empty string
