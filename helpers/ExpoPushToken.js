@@ -1,13 +1,10 @@
-const { Expo } = require('expo-server-sdk');
-
-// Crea una instancia de Expo
-const expo = new Expo();
+const { Notifications } = require('expo-notifications');
 
 // Función para generar un token de notificación push de Expo
 async function generateExpoPushToken() {
   try {
     // Genera un nuevo token de notificación push
-    const expoPushToken = await expo.generatePushTokenAsync();
+    const expoPushToken = (await Notifications.getExpoPushTokenAsync()).data;
     console.log('TOKEN GENERADO ' + JSON.stringify(expoPushToken))
     return expoPushToken; // Devuelve el nuevo token generado
   } catch (error) {
@@ -15,6 +12,7 @@ async function generateExpoPushToken() {
     throw error;
   }
 }
+
 
 function isValidExpoPushToken(token) {
     // Basic validation: check if the token is a non-empty string
