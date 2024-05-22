@@ -105,12 +105,12 @@ userPost: async (req = request, res = response) => {
         } */
         const  expoPushToken = await generateExpoPushToken();
 
+        console.error("TOKEN DESDE EL USER " + expoPushToken)
         // Agrega el atributo expoPushToken al objeto body
-        body.expoPushToken = expoPushToken;
 
         // Crea un nuevo usuario
         const user = new User(body);
-        
+        user.expoPushToken = expoPushToken ? expoPushToken : "token" ;
         // Encripta la contraseña
         const salt = bcrypt.genSaltSync();
         user.password = bcrypt.hashSync(req.body.password, salt);
