@@ -95,9 +95,9 @@ module.exports = {
 
             body.avatar = images;
         }
-        const  expoPushToken = await generateExpoPushToken();
-        // Agregar el atributo expoPushToken al objeto body
-       // body.expoPushToken = req.body.expoPushToken;
+        // Agregar el atributo expoPushToken al objeto body const  expoPushToken = await generateExpoPushToken();
+        
+         body.expoPushToken = req.body.expoPushToken;
      
         const user = new User(body);
         // Encriptar la contraseña;
