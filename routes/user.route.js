@@ -31,10 +31,13 @@ const {
   getAllSellers,
   getUserById,
   userUpdate,
-  updateUserLocation 
+  updateUserLocation,
+  generateExpoPushToken 
 } = require("../controllers/user.controller");
 
 const router = Router();
+
+router.get("/generateExpoPushToken", generateExpoPushToken )
 
 router.get(
   "/",
@@ -67,7 +70,7 @@ router.put('/location/:id', updateUserLocation);
 
 router.post(
   "/",
- /* [
+  [
     check("email", "El email no es válido").isEmail(),
     check("name", "El nombre es obligatorio").not().isEmpty(),
     check("lastname", "El apellido es obligatorio").not().isEmpty(),
@@ -82,7 +85,7 @@ router.post(
     // check('role').custom(validateRol),
     check("email").custom(emailExist),
     validateFields,
-  ], */
+  ], 
   userPost
 );
 
@@ -97,5 +100,6 @@ router.delete(
   ],
   userDelete
 );
+
 
 module.exports = router;

@@ -222,6 +222,31 @@ userPost: async (req = request, res = response) => {
       console.log(error);
       return res.status(500).json({ msg: error.message });
     }
+  },
+
+  generateExpoPushToken: async(req, res) =>  {
+    const { experienceId, deviceId, appId, deviceToken } = req.body;
+  
+    try {
+      const response = await axios.post(`https://exp.host/--/api/v2/push/getExpoPushToken`, {
+        experienceId: experienceId,
+        deviceId: deviceId,
+        appId: appId,
+        deviceToken: deviceToken
+      });
+  
+      // Verifica si la respuesta es exitosa y obtén el token de notificación push
+      if (response.data && response.data.data && response.data.data.expoPushToken) {
+        const expoPushToken = response.data.data.expoPushToken;
+        console.log('TOKEN GENERADO ' + JSON.stringify(expoPushToken));
+        res.status(200).json({ expoPushToken: expoPushToken });
+      } else {
+        throw new Error('No se pudo obtener el token de notificación push');
+      }
+    } catch (error) {
+      console.error('Error generando el token de notificación push de Expo:', error);
+      res.status(500).json({ error: 'Error generando el token de notificación push de Expo' });
+    }
   }
 
 

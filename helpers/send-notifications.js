@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const { User } = require('../models');
 require('dotenv').config();
 
@@ -11,14 +12,19 @@ async function sendPushNotification(expoPushToken, title, body) {
   };
 
   try {
-    const response = await fetch("https://exp.host/--/api/v2/push/send", {
+    const response = await fetch("https://fcm.googleapis.com/fcm/send", {
       method: "POST",
       headers: {
-        Accept: "application/json",
-        "Accept-encoding": "gzip, deflate",
         "Content-Type": "application/json",
+        "Authorization": `key=${process.env.FIREBASE_SERVER_KEY}`, // Reemplaza con tu clave del servidor Firebase
       },
-      body: JSON.stringify(message),
+      body: JSON.stringify({
+        to: expoPushToken,
+        notification: {
+          title,
+          body,
+        },
+      }),
     });
 
     // Manejar la respuesta si es necesario
@@ -46,16 +52,15 @@ async function sendDemandNotification(location) {
     });
 
     // Envía notificaciones a cada vendedor encontrado
-    sellers.forEach(async (seller) => {
+    for (const seller of sellers) {
       await sendPushNotification(seller.expoPushToken, 'Demanda cerca tuyo', 'Un usuario cerca tuyo pide un presupuesto de productos');
-    });
+    }
 
     console.log('Notificaciones enviadas con éxito a los vendedores cercanos.');
   } catch (error) {
     console.error('Error al enviar las notificaciones:', error);
   }
 }
-
 
 async function sendMessageNotification(recipientId, title, body) {
   try {
@@ -71,7 +76,6 @@ async function sendMessageNotification(recipientId, title, body) {
     console.error('Error al enviar la notificación push:', error);
   }
 }
-
 
 module.exports = {
   sendPushNotification,
