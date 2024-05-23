@@ -1,64 +1,55 @@
-const { request, response } = require('express');
-const User = require('../models/user');
-const { generateJWT, tokenEmail } = require('../helpers/generate-jwt');
-const bcrypt = require('bcryptjs');
-const { googleVerify } = require('../helpers/google-verify');
-const { handleUpload } = require('../config/cloudinary');
-const { sendMailAsync } = require('../helpers/generate-invitation');
-const {generateExpoPushToken} = require('../helpers/ExpoPushToken.js')
-const { Expo } = require('expo-server-sdk');
+const { request, response } = require("express");
+const User = require("../models/user");
+const { generateJWT, tokenEmail } = require("../helpers/generate-jwt");
+const bcrypt = require("bcryptjs");
+const { googleVerify } = require("../helpers/google-verify");
+const { handleUpload } = require("../config/cloudinary");
+const { sendMailAsync } = require("../helpers/generate-invitation");
+const { generateExpoPushToken } = require("../helpers/ExpoPushToken.js");
+const { Expo } = require("expo-server-sdk");
 
 // Crea una instancia de Expo
 const expo = new Expo();
 
-
 module.exports = {
-  login : async (req, res) => {
+  login: async (req, res) => {
     const { email, password, expoPushToken } = req.body;
     try {
-        const user = await User.findOne({ email: email.toLowerCase() });
+      const user = await User.findOne({ email: email.toLowerCase() });
 
-        if (!user) {
-            return res.status(400).json({
-                msg: 'Usuario no encontrado',
-            });
-        }
-
-        const match = bcrypt.compareSync(password, user.password);
-        if (!match) {
-            return res.status(400).json({
-                msg: 'Contraseña incorrecta',
-            });
-        }
-
-        // Verificar si el expoPushToken es diferente y actualizarlo si es necesario
-        if (expoPushToken && expoPushToken !== user.expoPushToken) {
-            c.expoPushToken = expoPushToken;
-          
-        }
-
-        if (!Expo.isExpoPushToken(user.expoPushToken)) {
-          console.error('Entre a generar un token ')
-           // Si el token es inválido o no está presente, genera uno nuevo
-           user.expoPushToken = await generateExpoPushToken();
-
-       }
-
-  await user.save();
-
-        const token = await generateJWT(user._id);
-
-        return res.json({
-            user,
-            token,
+      if (!user) {
+        return res.status(400).json({
+          msg: "Usuario no encontrado",
         });
+      }
+
+      const match = bcrypt.compareSync(password, user.password);
+      if (!match) {
+        return res.status(400).json({
+          msg: "Contraseña incorrecta",
+        });
+      }
+
+      // Verificar si el expoPushToken es diferente y actualizarlo si es necesario
+      if (expoPushToken && expoPushToken !== user.expoPushToken) {
+        c.expoPushToken = expoPushToken;
+      }
+
+      await user.save();
+
+      const token = await generateJWT(user._id);
+
+      return res.json({
+        user,
+        token,
+      });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            msg: `Ha ocurrido un error: ${error.message}`,
-        });
+      console.error(error);
+      return res.status(500).json({
+        msg: `Ha ocurrido un error: ${error.message}`,
+      });
     }
-},
+  },
   googleSignIn: async (req = request, res = response) => {
     const { id_token } = req.body;
 
@@ -72,7 +63,7 @@ module.exports = {
         const data = {
           name,
           email,
-          password: ':p',
+          password: ":p",
           google: true,
           img: picture,
         };
@@ -83,14 +74,14 @@ module.exports = {
       // Si el usuario en DB
       if (!user.state) {
         return res.status(401).json({
-          msg: 'Hable con el administrador, usuario bloqueado',
+          msg: "Hable con el administrador, usuario bloqueado",
         });
       }
 
       const token = await generateJWT(user._id);
 
       return res.json({
-        msg: 'ok',
+        msg: "ok",
         user,
         token,
       });
@@ -103,10 +94,10 @@ module.exports = {
   },
 
   profile: async (req = request, res = response) => {
-    const user = await User.findById(req.user._id).populate('services');
+    const user = await User.findById(req.user._id).populate("services");
     if (!user) {
       return res.status(404).json({
-        msg: 'Usuario no encontrado',
+        msg: "Usuario no encontrado",
       });
     }
     user.password = null;
@@ -120,8 +111,8 @@ module.exports = {
       let cldRes = null;
 
       if (req.file) {
-        const b64 = Buffer.from(req.file.buffer).toString('base64');
-        let dataURI = 'data:' + req.file.mimetype + ';base64,' + b64;
+        const b64 = Buffer.from(req.file.buffer).toString("base64");
+        let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
         cldRes = await handleUpload(dataURI);
       }
       if (cldRes) {
@@ -141,14 +132,14 @@ module.exports = {
           avatar,
           city,
         },
-        { new: true },
+        { new: true }
       );
 
       return res.json(user);
     } catch (e) {
       console.log(e);
       return res.status(500).json({
-        msg: 'A ocurrido un error',
+        msg: "A ocurrido un error",
       });
     }
   },
@@ -159,7 +150,7 @@ module.exports = {
       const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
         return res.status(404).json({
-          msg: 'Usuario no encontrado',
+          msg: "Usuario no encontrado",
         });
       }
       const token = await tokenEmail();
@@ -175,19 +166,19 @@ module.exports = {
       `;
 
       const mailOptions = {
-        from: 'sender@server.com',
+        from: "sender@server.com",
         to: email,
-        subject: 'Cambio de contraseña ',
+        subject: "Cambio de contraseña ",
         html,
       };
 
       await sendMailAsync(mailOptions);
 
-      return res.json('token enviado al email');
+      return res.json("token enviado al email");
     } catch (e) {
       console.log(e);
       return res.status(500).json({
-        msg: 'A ocurrido un error',
+        msg: "A ocurrido un error",
       });
     }
   },
@@ -198,22 +189,22 @@ module.exports = {
       const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
         return res.status(404).json({
-          msg: 'Usuario no encontrado',
+          msg: "Usuario no encontrado",
         });
       }
 
       if (user.passwordToken !== token) {
         return res.status(401).json({
-          msg: 'Token no valido',
+          msg: "Token no valido",
         });
       }
       return res.json({
-        msg: 'ok',
+        msg: "ok",
       });
     } catch (e) {
       console.log(e);
       return res.status(500).json({
-        msg: 'A ocurrido un error',
+        msg: "A ocurrido un error",
       });
     }
   },
@@ -223,12 +214,12 @@ module.exports = {
       const user = await User.findOne({ email: email.toLowerCase() });
       if (!user) {
         return res.status(404).json({
-          msg: 'Usuario no encontrado',
+          msg: "Usuario no encontrado",
         });
       }
       if (user.passwordToken !== token) {
         return res.status(404).json({
-          msg: 'Token no valido',
+          msg: "Token no valido",
         });
       }
       const salt = bcrypt.genSaltSync();
@@ -238,12 +229,12 @@ module.exports = {
       await user.save();
 
       return res.json({
-        msg: 'contraseña cambiada',
+        msg: "contraseña cambiada",
       });
     } catch (e) {
       console.log(e);
       return res.status(500).json({
-        msg: 'A ocurrido un error',
+        msg: "A ocurrido un error",
       });
     }
   },
